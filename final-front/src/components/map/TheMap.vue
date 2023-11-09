@@ -60,11 +60,9 @@
     </div>
   </div>
   <!--kakao map start-->
-  <div class="container">
-    <!-- kakao map start -->
-    <div id="map" class="mt-3"></div>
-    <!-- kakao map end -->
-  </div>
+  <!-- <div class="container">
+    <div id="map" class="mt-3"></div> 
+  </div> -->
 </template>
 
 <style scoped></style>

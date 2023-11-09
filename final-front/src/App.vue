@@ -7,10 +7,11 @@ import KakaoMap from "./views/KakaoMap.vue";
 
 <template>
   <TheHeader></TheHeader>
-  <TheMap></TheMap>
+  <!-- <TheMap></TheMap> -->
   <!-- <RouterView></RouterView> -->
   <!-- <TheFooter></TheFooter> -->
-  <KakaoMap />
+  <!-- <KakaoMap /> -->
+  <router-view></router-view>
 </template>
 
 <style scoped></style>
