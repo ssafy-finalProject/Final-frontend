@@ -5,7 +5,7 @@ import TheFooter from "./components/layout/TheFooter.vue";
 
 <template>
   <TheHeader></TheHeader>
-  <h1>확인</h1>
+
   <!-- <RouterView></RouterView> -->
   <TheFooter></TheFooter>
 </template>
