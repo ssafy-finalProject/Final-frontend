@@ -45,4 +45,7 @@
   </main>
 </template>
 
-<style scoped></style>
+<style scoped>
+@import "@/assets/css/login.css";
+@import url("https://fonts.googleapis.com/css?family=Noto+Sans KR&display=swap");
+</style>
