@@ -2,7 +2,7 @@
 import { ref } from "vue";
 
 const userInfo = ref({
-  userId: "test",
+  // userId: "test",
 });
 </script>
 
@@ -30,10 +30,14 @@ const userInfo = ref({
         <c:when test="${empty userInfo.userId }"> -->
         <ul v-if="!userInfo.userId" class="navbar-nav">
           <li class="nav-item">
-            <a class="nav-link" href="${root}/member/login">로그인</a>
+            <router-link to="/login">
+              <a class="nav-link">로그인</a>
+            </router-link>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="${root}/member/join">회원가입</a>
+            <router-link to="/register">
+              <a class="nav-link">회원가입</a>
+            </router-link>
           </li>
         </ul>
         <!-- </c:when> -->

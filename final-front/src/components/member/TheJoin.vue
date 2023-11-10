@@ -1,20 +1,20 @@
 <script setup>
 import { ref } from "vue";
-// import { registerMember } from "@/api/member";
+import { registerMember } from "@/api/member";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
 
 const joinUser = ref({
-  userid: "",
-  username: "",
-  userpass: "",
+  userId: "",
+  userName: "",
+  userPass: "",
 });
 
 const canSubmit = ref(true);
 
 const check_pw = (e) => {
-  let pass = joinUser.value.userpass;
+  let pass = joinUser.value.userPass;
   let passcheck = e.target.value;
   console.log(e.target.value);
   if (pass != passcheck) {
@@ -37,7 +37,7 @@ const check_pw = (e) => {
 
 const onSubmit = () => {
   //console.log("회원가입 시도....");
-  //console.log("받은 아이디" + joinUser.value.userid);
+  //console.log("받은 아이디" + joinUser.value);
   registerMember(
     joinUser.value,
     (successMsg) => {
@@ -47,6 +47,7 @@ const onSubmit = () => {
       console.log(error);
     }
   );
+  router.push("/");
 };
 </script>
 
@@ -64,7 +65,7 @@ const onSubmit = () => {
             <label for="username" class="form-label">이름 : </label>
             <input
               type="text"
-              v-model="joinUser.username"
+              v-model="joinUser.userName"
               class="form-control"
               id="username"
               name="username"
@@ -75,7 +76,7 @@ const onSubmit = () => {
             <label for="userid" class="form-label">아이디 : </label>
             <input
               type="text"
-              v-model="joinUser.userid"
+              v-model="joinUser.userId"
               class="form-control"
               id="userid"
               name="userid"
@@ -88,7 +89,7 @@ const onSubmit = () => {
             <label for="userpwd" class="form-label">비밀번호 : </label>
             <input
               type="password"
-              v-model="joinUser.userpass"
+              v-model="joinUser.userPass"
               class="form-control"
               id="userpass"
               name="userpass"
