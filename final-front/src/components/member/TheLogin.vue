@@ -1,20 +1,43 @@
-<script setup></script>
+<script setup>
+import { ref } from "vue";
+import { login } from "@/api/member";
+import { useRouter } from "vue-router";
 
+//const cookie = ref(this.$cookies.get("userId"));
+//console.log("쿠키왔나" + cookie);
+
+const router = useRouter();
+
+const loginUser = ref({
+  userId: "",
+  userName: "",
+  userPass: "",
+});
+
+const onSubmit = () => {
+  console.log("로그인 시도....");
+  login(
+    loginUser.userId,
+    loginUser.value,
+    (successMsg) => {
+      console.log(successMsg);
+    },
+    (error) => {
+      console.log(error);
+    }
+  );
+  router.push("/");
+};
+</script>
 <template>
   <main>
-    <form action="${root }/member/login" method="post" id="loginForm" name="loginForm">
+    <form id="loginForm" name="loginForm" @submit.prevent="onSubmit">
       <h1 class="loginText">로그인</h1>
       <div class="box">
         <div class="totalBox">
           <span class="titleText">아이디</span>
           <span class="inputBox">
-            <input
-              type="text"
-              id="userid"
-              name="userid"
-              placeholder="ID 입력"
-              value="${cookie.userId.value}"
-              required />
+            <input type="text" v-model="loginUser.userId" id="userid" name="userid" placeholder="ID 입력" required />
           </span>
         </div>
       </div>
@@ -23,7 +46,13 @@
         <div class="totalBox">
           <span class="titleText">비밀번호</span>
           <span class="inputBox"
-            ><input type="password" id="userpass" name="userpass" placeholder="비밀번호 입력" required />
+            ><input
+              type="password"
+              v-model="loginUser.userPass"
+              id="userpass"
+              name="userpass"
+              placeholder="비밀번호 입력"
+              required />
           </span>
         </div>
       </div>
@@ -37,8 +66,8 @@
 
       <div class="moveNextPage">
         <ul style="align-center">
-          <li><a href="${root }/member/join">회원가입 하기</a></li>
-          <li><a href="${root }/member/findPassword">비밀번호 찾기</a></li>
+          <!-- <li><a href="${root }/member/join">회원가입 하기</a></li> -->
+          <!-- <li><a href="${root }/member/findPassword">비밀번호 찾기</a></li> -->
         </ul>
       </div>
     </form>
