@@ -13,11 +13,11 @@ import TheBoardModify from "./components/board/TheBoardModify.vue";
 
 <template>
   <TheHeader></TheHeader>
-  <TheBoardModify></TheBoardModify>
+  <!-- <TheBoardModify></TheBoardModify> -->
   <!-- <TheBoardWrite></TheBoardWrite> -->
   <!-- <TheBoardView /> -->
   <!-- <TheMyPage></TheMyPage> -->
-  <!-- <TheJoin></TheJoin> -->
+  <TheJoin></TheJoin>
   <!-- <TheFindPassWord></TheFindPassWord> -->
   <!-- <TheLogin></TheLogin> -->
   <!-- <TheMain /> -->
