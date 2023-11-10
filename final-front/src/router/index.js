@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
-import HomeView from "../views/HomeView.vue";
+import TheMain from '../views/TheMain.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -7,7 +7,7 @@ const router = createRouter({
     {
       path: "/",
       name: "home",
-      component: HomeView,
+      component: TheMain
     },
     {
       path: "/about",
@@ -17,7 +17,38 @@ const router = createRouter({
       // which is lazy-loaded when the route is visited.
       component: () => import("../views/AboutView.vue"),
     },
-    {},
+    {
+      path: "/board",
+      name: 'board',
+      component: () => import("../components/board/BoardList.vue"),
+      redirect: { name: "boardlist" },
+      children: [
+        {
+          path: "list",
+          name: "boardlist",
+          component: () => import("../components/board/BoardList.vue")
+        },
+        {
+          path: "write",
+          name: "boardwrite",
+          component: () => import("../components/board/BoardWrite.vue")
+        },
+        {
+          path: "view/:no",
+          name: "boardview",
+          component: () => import("../components/board/BoardView.vue")
+        },
+        {
+          path: "modify/:no",
+          name: "boardmodify",
+          component: () => import("../components/board/BoardModify.vue")
+        }
+      ]
+
+    },
+    {
+
+    }
   ],
 });
 
