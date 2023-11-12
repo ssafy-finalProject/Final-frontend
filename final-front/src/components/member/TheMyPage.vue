@@ -1,11 +1,71 @@
 <script setup>
-import { ref } from "vue";
+import { ref,onMounted } from "vue";
+import { modifyMember,getMember,deleteMember } from "@/api/member";
+import { useRouter } from "vue-router";
 
-const userInfo = ref({
-  userid: "test",
-  username: "testname",
-  userpass: "1234",
+const router = useRouter();
+const loginUser = ref({
+  userId: "",
+  userName: "",
+  userPass: "",
 });
+
+
+onMounted(()=>{
+  let tmp = (JSON.parse(localStorage.getItem("userinfo")).userId)
+  getMember(tmp,
+  (successMsg) => {
+      let tmp2 = JSON.stringify(successMsg.data);
+      console.log(tmp2);
+      loginUser.value.userId = JSON.parse(tmp2).userId;
+      loginUser.value.userName = JSON.parse(tmp2).userName;
+      loginUser.value.userPass = JSON.parse(tmp2).userPass;
+    },
+    (error) => {
+      console.log(error);
+    })
+});
+
+const canSubmit = ref(true);
+const check_pw = (e) => {
+  let pass = loginUser.value.userPass;
+  let passcheck = e.target.value;
+  console.log(e.target.value);
+  if (pass != passcheck) {
+    canSubmit.value = true;
+  } else {
+    canSubmit.value = false;
+  }
+}
+const onSubmit = () => {
+  console.log("회원정보 수정 시도....");
+  modifyMember(
+    loginUser.value.userId,
+    loginUser.value,
+    (successMsg) => {
+      console.log(successMsg);
+    },
+    (error) => {
+      console.log(error);
+    }
+  );
+  router.push("/");
+};
+
+const deleteMem = ()=>{
+  console.log("회원탈퇴 시도")
+  console.log(loginUser.value.userId);
+  deleteMember(loginUser.value.userId,
+  (successMsg) => {
+      console.log(successMsg);
+    },
+    (error) => {
+      console.log(error);
+    }
+    );
+    router.push("/");
+}
+
 </script>
 
 <template>
@@ -17,38 +77,40 @@ const userInfo = ref({
         </h2>
       </div>
       <div class="col-lg-8 col-md-10 col-sm-12">
-        <form id="form-join" method="POST" action="${root}/member/modify">
-          <div class="mb-3">
-            <label for="userid" class="form-label">아이디 : </label>
-            <input
-              type="text"
-              id="userid"
-              class="form-control"
-              name="userid"
-              style="border: none; background: transparent"
-              :value="userInfo.userid"
-              disabled />
-          </div>
+        <form id="form-join" @submit.prevent="onSubmit">
           <div class="mb-3">
             <label for="username" class="form-label">이름 : </label>
             <input
               type="text"
-              id="username"
+              v-model="loginUser.userName"
               class="form-control"
+              id="username"
               name="username"
-              style="background: transparent"
-              :value="userInfo.username" />
+              placeholder="이름..."
+              required />
           </div>
+          <div class="mb-3">
+            <label for="userid" class="form-label">아이디 : </label>
+            <input
+              type="text"
+              v-model="loginUser.userId"
+              class="form-control"
+              id="userid"
+              name="userid"
+              placeholder="아이디..."
+              required />
+          </div>
+          <div id="msg"></div>
+          <div id="result-view" class="mb-3"></div>
           <div class="mb-3">
             <label for="userpwd" class="form-label">비밀번호 : </label>
             <input
               type="password"
+              v-model="loginUser.userPass"
               class="form-control"
-              id="userpwd"
-              name="userpwd"
+              id="userpass"
+              name="userpass"
               placeholder="비밀번호..."
-              onchange="check_pw()"
-              :value="userInfo.userpass"
               required />
           </div>
           <div class="mb-3">
@@ -57,8 +119,7 @@ const userInfo = ref({
               type="password"
               class="form-control"
               id="pwdcheck"
-              onchange="check_pw()"
-              :value="userInfo.userpass"
+              @input="check_pw"
               placeholder="비밀번호확인..."
               required />
           </div>
@@ -66,7 +127,7 @@ const userInfo = ref({
           <div id="result-view" class="mb-3"></div>
           <div class="col-auto text-center">
             <button type="submit" id="btn-modify" class="btn btn-outline-primary mb-3">정보수정</button>
-            <a href="${root}/member/delete" id="btn-delete" class="btn btn-outline-primary mb-3">회원탈퇴</a>
+            <button type ="button" id="btn-delete" class="btn btn-outline-primary mb-3" @click="deleteMem">회원탈퇴</button>
           </div>
         </form>
       </div>

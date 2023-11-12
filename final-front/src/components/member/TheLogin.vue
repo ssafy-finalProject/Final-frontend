@@ -17,15 +17,19 @@ const loginUser = ref({
 const onSubmit = () => {
   console.log("로그인 시도....");
   login(
-    loginUser.userId,
     loginUser.value,
+    loginUser.userId,
     (successMsg) => {
       console.log(successMsg);
+      console.log(successMsg.data.resdata);
+      localStorage.setItem("userinfo",JSON.stringify(successMsg.data.resdata));
+      //console.log(JSON.parse(localStorage.getItem("userinfo")).userId);
     },
     (error) => {
       console.log(error);
     }
   );
+  
   router.push("/");
 };
 </script>
