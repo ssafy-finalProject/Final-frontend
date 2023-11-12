@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from "vue-router";
-import TheMain from "../views/TheMain.vue";
 import TheMain from "@/views/TheMain.vue";
 import TheLogin from "@/components/member/TheLogin.vue";
 import TheFindPassWord from "@/components/member/TheFindPassWord.vue";
