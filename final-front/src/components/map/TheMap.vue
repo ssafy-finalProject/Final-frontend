@@ -1,4 +1,6 @@
 <script setup>
+import{ref,onMounted} from "vue";
+import{initAndGetSidoList} from "@/api/map.js";
 // export default {
 //   data() {
 //     return {
@@ -30,6 +32,26 @@
 //     }
 //   },
 // };
+let sidoCategories=ref([]);
+let gugunCategories=ref([]);
+
+//onMount에서 api 실행시켜서 리스트를 끌어와야지
+onMounted(async()=>{
+  initSidoPage();
+})
+
+const initSidoPage = async()=>{
+  await initAndGetSidoList((success)=>{
+    //console.log(success.data);
+    sidoCategories=success.data;
+    console.log(sidoCategories);
+  },
+  (fail)=>{
+    console.log(fail);
+  });
+  //sidoCategories.value = response.data.
+}
+
 </script>
 
 <template>
@@ -39,9 +61,10 @@
     <div class="dropdown d-flex justify-content-center mt-3 mb-3">
       <select name="sido" id="sido" class="dropdown-toggle ms-3 me-3" required>
         <option value="" selected disabled hidden>시도선택</option>
-        <c:forEach items="${sidoList}" var="sidoItem">
-          <option value="${sidoItem.sido_code}">${sidoItem.sido_name}</option>
-        </c:forEach>
+          <option v-for="category in sidoCategories" :key="category.sido_code" :value="sido_name">
+          {{ category.sido_name }} 
+          </option>
+
       </select>
       <select
         name="gugun"
