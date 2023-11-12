@@ -1,9 +1,22 @@
 <script setup>
-import { ref } from "vue";
+import { ref,onMounted } from "vue";
 
-const userInfo = ref({
-  // userId: "test",
-});
+const userInfo = ref(null);
+const logout = ()=>{
+  localStorage.removeItem("userinfo");
+}
+
+onMounted(()=>{
+  if(localStorage.length!=0){
+    const tmp = JSON.parse(localStorage.getItem("userinfo"));
+  if(tmp){
+    userInfo.value = tmp;
+  }
+  console.log("현재 로그인 정보는"+userInfo.value.userId);
+  }
+  
+})
+
 </script>
 
 <template>
@@ -28,7 +41,7 @@ const userInfo = ref({
         </ul>
         <!-- <c:choose>
         <c:when test="${empty userInfo.userId }"> -->
-        <ul v-if="!userInfo.userId" class="navbar-nav">
+        <ul v-if="!userInfo" class="navbar-nav">
           <li class="nav-item">
             <router-link to="/login">
               <a class="nav-link">로그인</a>
@@ -48,10 +61,12 @@ const userInfo = ref({
             <a class="nav-link disabled">{{ userInfo.userId }}님 반갑습니다.</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="${root}/member/logout">로그아웃</a>
+            <a class="nav-link" @click="logout">로그아웃</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="${root}/member/mypage">마이페이지</a>
+            <router-link to="/mypage">
+            <a class="nav-link">마이페이지</a>
+          </router-link>
           </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">관리자</a>
