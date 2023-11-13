@@ -4,7 +4,7 @@ import TheFooter from "./components/layout/TheFooter.vue";
 import TheMain from "./views/TheMain.vue";
 import TheLogin from "./components/member/TheLogin.vue";
 import TheMap from "./components/map/TheMap.vue";
-import KakaoMap from "./views/KakaoMap.vue"
+import KakaoMap from "./views/KakaoMap.vue";
 </script>
 
 <template>
