@@ -12,22 +12,36 @@ function registerMember(memberInfo, success, fail) {
 }
 //회원정보 수정
 function modifyMember(userid, memberInfo, success, fail) {
-  Rest.put(`/member/`+userid,JSON.stringify(memberInfo)).then(success).catch(fail);
+  Rest.put(`/member/` + userid, JSON.stringify(memberInfo))
+    .then(success)
+    .catch(fail);
 }
 
 //회원 삭제(탈퇴)
-function deleteMember(userid,success, fail) {
-  Rest.delete(`/member/`+userid).then(success).catch(fail);
+function deleteMember(userid, success, fail) {
+  Rest.delete(`/member/` + userid)
+    .then(success)
+    .catch(fail);
 }
 
 //회원중복 체크
-function idCheck(userid,succes,fail){
-  Rest.get(`/member/idcheck/`+userid).then(success).catch(fail);
+function idCheck(userid, succes, fail) {
+  Rest.get(`/member/idcheck/` + userid)
+    .then(success)
+    .catch(fail);
 }
 
 //회원정보 가져오기
-function getMember(userid,success,fail){
-  Rest.get(`/member/`+userid).then(success).catch(fail);
+function getMember(userid, success, fail) {
+  Rest.get(`/member/` + userid)
+    .then(success)
+    .catch(fail);
 }
 
-export { login, registerMember, modifyMember, deleteMember, idCheck, getMember };
+function findPass(userid, username, success, fail) {
+  Rest.get(`/member/` + userid + `/` + username)
+    .then(success)
+    .catch(fail);
+}
+
+export { login, registerMember, modifyMember, deleteMember, idCheck, getMember, findPass };

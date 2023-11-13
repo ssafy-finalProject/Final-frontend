@@ -22,14 +22,14 @@ const onSubmit = () => {
     (successMsg) => {
       console.log(successMsg);
       console.log(successMsg.data.resdata);
-      localStorage.setItem("userinfo",JSON.stringify(successMsg.data.resdata));
+      localStorage.setItem("userinfo", JSON.stringify(successMsg.data.resdata));
       //console.log(JSON.parse(localStorage.getItem("userinfo")).userId);
     },
     (error) => {
       console.log(error);
     }
   );
-  
+
   router.push("/");
 };
 </script>
@@ -70,8 +70,16 @@ const onSubmit = () => {
 
       <div class="moveNextPage">
         <ul style="align-center">
-          <!-- <li><a href="${root }/member/join">회원가입 하기</a></li> -->
-          <!-- <li><a href="${root }/member/findPassword">비밀번호 찾기</a></li> -->
+          <li>
+            <router-link to="/register">
+              <a href="">회원가입 하기</a>
+            </router-link>
+          </li>
+          <li>
+            <router-link to="/findPassword">
+              <a href="">비밀번호 찾기</a>
+            </router-link>
+          </li>
         </ul>
       </div>
     </form>

@@ -3,12 +3,13 @@
 </script>
 
 <template>
-<c:if test="${article eq null}">
-		<!-- <script>
+  <!-- <c:if test="${article eq null}">
+		<script>
 		alert("글이 삭제되었거나 부적절한 URL 접근입니다.");
 		location.href = "${root}/article/list";
-		</script> -->
-	</c:if>
+		</script>
+	</c:if> -->
+     <!-- <%@ include file="/include/nav.jsp" %> -->
       <div class="row justify-content-center">
         <div class="col-lg-8 col-md-10 col-sm-12">
           <h2 class="my-3 py-3 shadow-sm bg-light text-center">
@@ -54,40 +55,6 @@
           </div>
         </div>
       </div>
-    <!-- 댓글 시작 -->
-    <div class="container mt-3">
-    <h2>댓글</h2>
-    	<c:forEach var="i" items="${comments}">
-    	<form action="${root }/article?action=deleteComment" method="POST">
-    	<div class="card">
-    	<input type="hidden" name="articleno" value=${article.article_no }>
-    	<input type="hidden" name="commentno" value=${i.commentId }>
-    	${i.commentId }
-		  <div class="card-header">아이디 : ${i.userId}</div>
-		  <div class="card-body">댓글 : ${i.commentText}</div>
-		      	
-		</div>
-    	<c:if test="${userInfo.userId eq i.userId}">
-              <button type="submit" id="comment-delete" class="btn btn-outline-danger mb-3 ms-1">
-                삭제
-              </button>
-        </c:if>
-        </form>
-    	</c:forEach>
-    </div>	
-	<!-- 댓글 끝 -->
-	<!-- 댓글 추가 -->
-    <div class="container mt-3">
-	  <form action="${root}/article" method = "POST">
-	  	<input type="hidden" name="action" value="addComment">
-         <input type="hidden" name="articleno" value="${article.article_no}">
-	    <div class="mb-3 mt-3">
-	      <label for="comment">댓글 달기:</label>
-	      <textarea class="form-control" rows="5" id="comment" name="comment" required></textarea>
-	    </div>
-	    <button type="submit" class="btn btn-primary">Submit</button>
-	  </form>
-	</div>
 </template>
 
 <style scoped>
