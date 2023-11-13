@@ -52,10 +52,10 @@ const getArticleList = () => {
     currentPage.value,
     ({ data }) => {
       console.log(data);
-      articles.value = data;
+      articles.value = data.articles;
       console.log(articles.value);
-      // currentPage.value = data.currentPage;
-      // totalPage.value = data.totalPageCount;
+      currentPage.value = data.currentPage;
+      totalPage.value = data.totalPageCount;
     },
     (fail) => {
       console.log(fail);
