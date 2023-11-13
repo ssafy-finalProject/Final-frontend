@@ -22,8 +22,10 @@ onMounted(()=>{
 <template>
   <nav class="navbar navbar-expand-lg bg-light navbar-light">
     <div class="container">
-      <a class="navbar-brand" href="#">
+      <a class="navbar-brand">
+        <router-link :to="{name:'main'}">
         <img src="@/assets/img/logo2.png" alt="" />
+        </router-link>
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
         <span class="navbar-toggler-icon"></span>
@@ -32,7 +34,11 @@ onMounted(()=>{
         <ul class="navbar-nav me-auto">
           <li class="nav-item"><a class="nav-link" href="#">공지사항</a></li>
           <li class="nav-item">
-            <a class="nav-link" href="${root}/article/list?pgno=1&key=&word=">여행지 추천</a>
+            <!-- <a class="nav-link" href="${root}/article/list?pgno=1&key=&word="> -->
+              <a class="nav-link">
+              <router-link :to="{name : 'board'}">
+                여행지 추천
+              </router-link></a>
           </li>
           <li class="nav-item"><a class="nav-link" href="#">여행 후기</a></li>
           <li class="nav-item">
@@ -87,5 +93,5 @@ onMounted(()=>{
 img {
   width: 120px;
 }
-@import "./assets/css/style.css";
+@import "@/assets/css/style.css";
 </style>
