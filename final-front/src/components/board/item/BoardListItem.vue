@@ -1,5 +1,5 @@
 <script setup>
-defineProps({ article: Object });
+defineProps({ article: Array });
 </script>
 
 <template>
