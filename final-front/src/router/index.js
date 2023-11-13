@@ -4,9 +4,9 @@ import TheLogin from "@/components/member/TheLogin.vue";
 import TheFindPassWord from "@/components/member/TheFindPassWord.vue";
 import TheJoin from "@/components/member/TheJoin.vue";
 import TheMyPage from "@/components/member/TheMyPage.vue";
-// import TheBoardView from "./components/board/TheBoardView.vue";
-// import TheBoardWrite from "./components/board/TheBoardWrite.vue";
-// import TheBoardModify from "./components/board/TheBoardModify.vue";
+// import TheBoardView from "@/components/board/TheBoardView.vue";
+// import TheBoardWrite from "@/components/board/TheBoardWrite.vue";
+// import TheBoardModify from "@/components/board/TheBoardModify.vue";
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -50,7 +50,7 @@ const router = createRouter({
     {
       path: "/board",
       name: "board",
-      component: () => import("../components/board/BoardList.vue"),
+      component: () => import("../views/TheBoardView.vue"),
       redirect: { name: "boardlist" },
       children: [
         {
@@ -61,17 +61,17 @@ const router = createRouter({
         {
           path: "write",
           name: "boardwrite",
-          component: () => import("../components/board/BoardWrite.vue"),
+          component: () => import("../components/board/TheBoardWrite.vue"),
         },
         {
           path: "view/:no",
           name: "boardview",
-          component: () => import("../components/board/BoardView.vue"),
+          component: () => import("../components/board/TheBoardView.vue"),
         },
         {
           path: "modify/:no",
           name: "boardmodify",
-          component: () => import("../components/board/BoardModify.vue"),
+          component: () => import("../components/board/TheBoardModify.vue"),
         },
       ],
     },

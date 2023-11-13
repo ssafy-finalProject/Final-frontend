@@ -12,11 +12,11 @@ import TheBoardView from "./components/board/TheBoardView.vue";
 <template>
   <div>
     <TheHeader></TheHeader>
-    <TheBoardView/>
+    <!-- <TheBoardView/> -->
     <!-- <TheBoardWrite/> -->
     <!-- <TheMap></TheMap> -->
     <!-- <KakaoMap></KakaoMap> -->
-    <!-- <router-view></router-view> -->
+    <router-view></router-view>
     <!-- <TheFooter></TheFooter> -->
   </div>
 </template>

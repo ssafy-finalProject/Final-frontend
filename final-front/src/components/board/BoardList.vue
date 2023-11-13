@@ -37,7 +37,7 @@ const changeKey = (val) => {
 };
 
 const moveWrite = () => {
-  router.push({ name: "boardwrite" });
+  router.push({ name: 'boardwrite' });
 };
 
 const getArticleList = () => {

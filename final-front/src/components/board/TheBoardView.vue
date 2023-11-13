@@ -1,4 +1,32 @@
 <script setup>
+import { ref, onMounted } from "vue";
+import { useRoute } from "vue-router";
+import {getArticle} from "@/api/board2"
+import BoardListItem from "./item/BoardListItem.vue";
+const boardArticle = ref({
+  article_no: "",
+  subject: "",
+  content:"",
+  hit:"",
+  user_id: "",
+  subject: "",
+  content: "",
+});
+
+const route = useRoute();
+console.log(route.params);
+
+onMounted(()=>{
+  getArticle(route.params,
+  (success)=>{
+    console.log(success);
+  },
+  (fail)=>{
+    console.log(fail);
+  })
+});
+
+
 
 </script>
 
@@ -28,7 +56,7 @@
                   src="https://raw.githubusercontent.com/twbs/icons/main/icons/person-fill.svg"
                 />
                 <p>
-                  <span class="fw-bold">${article.user_id}</span> <br />
+                  <p class="fw-bold">${/article.user_id}</p>span> <br />
                   <span class="text-secondary fw-light"> ${article.register_time} 조회 : ${article.hit} </span>
                 </p>
               </div>
