@@ -1,25 +1,28 @@
 <script setup>
 import { ref, onMounted } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute,useRouter } from "vue-router";
 import {getArticle} from "@/api/board2"
-import BoardListItem from "./item/BoardListItem.vue";
 const boardArticle = ref({
+  user_id:"",
   article_no: "",
   subject: "",
   content:"",
+  register_time:"",
   hit:"",
-  user_id: "",
-  subject: "",
-  content: "",
-});
 
+});
+const router=useRouter();
 const route = useRoute();
-console.log(route.params);
+//console.log(route.params.no);
+boardArticle.article_no = route.params.no;
+//console.log("Asdasdasd"+boardArticle.article_no);
 
 onMounted(()=>{
-  getArticle(route.params,
+  getArticle(route.params.no,
   (success)=>{
-    console.log(success);
+    console.log(success.data);
+    boardArticle.value = success.data;
+    console.log(boardArticle.value.subject);
   },
   (fail)=>{
     console.log(fail);
@@ -46,7 +49,7 @@ onMounted(()=>{
         </div>
         <div class="col-lg-8 col-md-10 col-sm-12">
           <div class="row my-2">
-            <h2 class="text-secondary px-5">${article.article_no}. ${article.subject}</h2>
+            <h2 class="text-secondary px-5">{{boardArticle.article_no}}. {{boardArticle.subject}}</h2>
           </div>
           <div class="row">
             <div class="col-md-8">
@@ -56,29 +59,35 @@ onMounted(()=>{
                   src="https://raw.githubusercontent.com/twbs/icons/main/icons/person-fill.svg"
                 />
                 <p>
-                  <p class="fw-bold">${/article.user_id}</p>span> <br />
-                  <span class="text-secondary fw-light"> ${article.register_time} 조회 : ${article.hit} </span>
+                  <p class="fw-bold">{{boardArticle.user_id}}</p> <br />
+                  <span class="text-secondary fw-light"> {{boardArticle.register_time}} 조회 : {{boardArticle.hit}} </span>
                 </p>
               </div>
             </div>
             <div class="col-md-4 align-self-center text-end">댓글 : 17</div>
             <div class="divider mb-3"></div>
             <div class="text-secondary">
-              ${article.content}
+              {{boardArticle.content}}
             </div>
             <div class="divider mt-3 mb-3"></div>
             <div class="d-flex justify-content-end">
+              <router-link to="/board">
               <button type="button" id="btn-list" class="btn btn-outline-primary mb-3">
                 글목록
               </button>
-              <c:if test="${userInfo.userId eq article.user_id}">
+            </router-link>
+              <!-- <c:if test="${userInfo.userId eq article.user_id}"> -->
+                <template v-if="boardArticle.article_no">
+                <router-link :to="{ name: 'boardmodify', params: { no: boardArticle.article_no } }">
               <button type="button" id="btn-mv-modify" class="btn btn-outline-success mb-3 ms-1">
                 글수정
               </button>
+              </router-link>
+            </template>
               <button type="button" id="btn-delete" class="btn btn-outline-danger mb-3 ms-1">
                 글삭제
               </button>
-              </c:if>
+              <!-- </c:if> -->
             </div>
           </div>
         </div>

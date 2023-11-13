@@ -13,7 +13,7 @@ function deleteArticle(articleno,success,fail){
 }
 
 function getArticle(articleno,success,fail){
-    Rest.get(`${url}/`+articleno).then(success).catch(fail);
+    Rest.get(`${url}/`+articleno,articleno).then(success).catch(fail);
 }
 
 export{writeArticle,deleteArticle,getArticle};
