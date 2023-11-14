@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRoute,useRouter } from "vue-router";
-import {getArticle,deleteArticle} from "@/api/board2"
+import {getArticle,deleteArticle} from "@/api/board"
 const boardArticle = ref({
   user_id:"",
   article_no: "",

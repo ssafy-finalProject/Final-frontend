@@ -1,30 +1,28 @@
 <script setup>
-import { ref,onMounted } from "vue";
+import { ref, onMounted } from "vue";
 
 const userInfo = ref(null);
-const logout = ()=>{
+const logout = () => {
   localStorage.removeItem("userinfo");
-}
+};
 
-onMounted(()=>{
-  if(localStorage.length!=0){
+onMounted(() => {
+  if (localStorage.length != 0) {
     const tmp = JSON.parse(localStorage.getItem("userinfo"));
-  if(tmp){
-    userInfo.value = tmp;
+    if (tmp) {
+      userInfo.value = tmp;
+    }
+    console.log("현재 로그인 정보는" + userInfo.value.userId);
   }
-  console.log("현재 로그인 정보는"+userInfo.value.userId);
-  }
-  
-})
-
+});
 </script>
 
 <template>
   <nav class="navbar navbar-expand-lg bg-light navbar-light">
     <div class="container">
       <a class="navbar-brand">
-        <router-link :to="{name:'main'}">
-        <img src="@/assets/img/logo2.png" alt="" />
+        <router-link :to="{ name: 'main' }">
+          <img src="@/assets/img/logo2.png" alt="" />
         </router-link>
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
@@ -35,10 +33,7 @@ onMounted(()=>{
           <li class="nav-item"><a class="nav-link" href="#">공지사항</a></li>
           <li class="nav-item">
             <!-- <a class="nav-link" href="${root}/article/list?pgno=1&key=&word="> -->
-              <a class="nav-link">
-              <router-link :to="{name : 'board'}">
-                여행지 추천
-              </router-link></a>
+            <a class="nav-link"> <router-link :to="{ name: 'board' }"> 여행지 추천 </router-link></a>
           </li>
           <li class="nav-item"><a class="nav-link" href="#">여행 후기</a></li>
           <li class="nav-item">
@@ -71,8 +66,8 @@ onMounted(()=>{
           </li>
           <li class="nav-item">
             <router-link to="/mypage">
-            <a class="nav-link">마이페이지</a>
-          </router-link>
+              <a class="nav-link">마이페이지</a>
+            </router-link>
           </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">관리자</a>

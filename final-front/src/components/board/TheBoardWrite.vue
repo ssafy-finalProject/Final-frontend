@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import {writeArticle} from "@/api/board2"
+import { writeArticle } from "@/api/board";
 const router = useRouter();
 let tempid = JSON.parse(localStorage.getItem("userinfo")).userId;
 const boardArticle = ref({
@@ -24,7 +24,6 @@ const onSubmit = () => {
   );
   router.push("list");
 };
-
 </script>
 
 <template>
@@ -38,7 +37,13 @@ const onSubmit = () => {
       <form id="form-register" @submit.prevent="onSubmit">
         <div class="mb-3">
           <label for="subject" class="form-label">제목 : </label>
-          <input type="text" v-model="boardArticle.subject" class="form-control" id="subject" name="subject" placeholder="제목..." />
+          <input
+            type="text"
+            v-model="boardArticle.subject"
+            class="form-control"
+            id="subject"
+            name="subject"
+            placeholder="제목..." />
         </div>
         <div class="mb-3">
           <label for="content" class="form-label">내용 : </label>

@@ -9,12 +9,28 @@ function totalArticle(success, fail) {
 }
 
 function listArticle(key, word, pgno, success, fail) {
-  Rest.get(`${url}/list?key=${key}&word=${word}&pgno=${pgno}`)
+  Rest.get(`${url}/list?key=${key}&word=${word}&pgno=${pgno}`).then(success).catch(fail);
+}
+
+function writeArticle(boardInfo, success, fail) {
+  Rest.post(`${url}`, boardInfo).then(success).catch(fail);
+}
+
+function deleteArticle(articleno, success, fail) {
+  Rest.delete(`${url}/` + articleno)
     .then(success)
     .catch(fail);
 }
 
-function listArticle2(succes, fail) {
-  console.log("실행");
+function getArticle(articleno, success, fail) {
+  Rest.get(`${url}/` + articleno, articleno)
+    .then(success)
+    .catch(fail);
 }
-export { listArticle, listArticle2, totalArticle };
+
+function modifyArticle(articleno, boardInfo, success, fail) {
+  Rest.put(`${url}/` + articleno, JSON.stringify(boardInfo))
+    .then(success)
+    .catch(fail);
+}
+export { listArticle, totalArticle, writeArticle, deleteArticle, getArticle, modifyArticle };
