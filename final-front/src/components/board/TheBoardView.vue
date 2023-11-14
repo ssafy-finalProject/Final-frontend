@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRoute,useRouter } from "vue-router";
-import {getArticle} from "@/api/board2"
+import {getArticle,deleteArticle} from "@/api/board2"
 const boardArticle = ref({
   user_id:"",
   article_no: "",
@@ -29,6 +29,20 @@ onMounted(()=>{
   })
 });
 
+
+const deleteArt = ()=>{
+  console.log("글 삭제시도")
+  console.log(boardArticle.value.article_no);
+  deleteArticle(boardArticle.value.article_no,
+  (successMsg) => {
+      console.log(successMsg);
+    },
+    (error) => {
+      console.log(error);
+    }
+    );
+    router.push("/board");
+}
 
 
 </script>
@@ -85,7 +99,7 @@ onMounted(()=>{
               </button>
               </router-link>
             </template>
-              <button type="button" id="btn-delete" class="btn btn-outline-danger mb-3 ms-1">
+              <button type="button" id="btn-delete" class="btn btn-outline-danger mb-3 ms-1" @click="deleteArt">
                 글삭제
               </button>
               <!-- </c:if> -->
