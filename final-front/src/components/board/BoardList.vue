@@ -2,10 +2,15 @@
 import VSelect from "../common/VSelect.vue";
 import PageNavigation from "../common/PageNavigation.vue";
 import BoardListItem from "../board/item/BoardListItem.vue";
-import { listArticle } from "@/api/board";
+import { listArticle, totalArticle } from "@/api/board";
 
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
+
+onMounted(() => {
+  console.log("테스트");
+  getArticleList();
+});
 
 const router = useRouter();
 
@@ -21,14 +26,12 @@ const selectOption = ref([
   { text: "작성자아이디", value: "user_id" },
 ]); // 부모에서 자식으로 보낼 때의 selectOption 배열들
 
-const param = ref([
-  {
-    pgno: currentPage.value,
-    spp: VITE_ARTICLE_LIST_SIZE,
-    key: "",
-    word: "",
-  },
-]);
+const param = ref({
+  pgno: currentPage.value,
+  spp: VITE_ARTICLE_LIST_SIZE,
+  key: "",
+  word: "",
+});
 
 // console.log(param.value.pgno);
 const changeKey = (val) => {
