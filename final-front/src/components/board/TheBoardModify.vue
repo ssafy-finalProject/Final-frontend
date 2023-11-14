@@ -1,32 +1,50 @@
 <script setup>
 import { ref, onMounted } from "vue";
-import { useRoute,useRouter } from "vue-router";
-import {getArticle} from "@/api/board2"
+import { useRoute, useRouter } from "vue-router";
+import { getArticle, modifyArticle } from "@/api/board2";
 const boardArticle = ref({
-  user_id:"",
+  user_id: "",
   article_no: "",
   subject: "",
-  content:"",
-  register_time:"",
-  hit:"",
-
+  content: "",
+  register_time: "",
+  hit: "",
 });
-const router=useRouter();
+const router = useRouter();
 const route = useRoute();
 //console.log(route.params.no);
 boardArticle.article_no = route.params.no;
-onMounted(()=>{
-  getArticle(route.params.no,
-  (success)=>{
-    console.log(success.data);
-    boardArticle.value = success.data;
-    console.log(boardArticle.value.subject);
-  },
-  (fail)=>{
-    console.log(fail);
-  })
+onMounted(() => {
+  getArticle(
+    route.params.no,
+    (success) => {
+      console.log(success.data);
+      boardArticle.value = success.data;
+      console.log(boardArticle.value.subject);
+    },
+    (fail) => {
+      console.log(fail);
+    }
+  );
 });
 
+const onSubmit = () => {
+  console.log("수정 시도....");
+  console.log("수정 정보" + JSON.stringify(boardArticle.value));
+  console.log(boardArticle.value.subject);
+  console.log(boardArticle.value.content);
+  modifyArticle(
+    boardArticle.value.article_no,
+    boardArticle.value,
+    (success) => {
+      console.log("나나나" + JSON.stringify(success.data));
+      //pass.value = success.data.userPass;
+    },
+    (fail) => {
+      console.log(fail);
+    }
+  );
+};
 </script>
 
 <template>
@@ -37,7 +55,7 @@ onMounted(()=>{
       </h2>
     </div>
     <div class="col-lg-8 col-md-10 col-sm-12">
-      <form id="form-modify" method="POST" action="">
+      <form id="form-modify" @submit.prevent="onSubmit">
         <input type="hidden" name="action" value="modify" />
         <input type="hidden" name="articleno" value="${article.articleNo}" />
         <div class="mb-3">
@@ -46,13 +64,15 @@ onMounted(()=>{
         </div>
         <div class="mb-3">
           <label for="content" class="form-label">내용 : </label>
-          <textarea class="form-control" id="content" name="content" rows="7" >{{boardArticle.content}}</textarea>
+          <textarea class="form-control" id="content" name="content" rows="7" v-model="boardArticle.content">{{
+            boardArticle.content
+          }}</textarea>
         </div>
         <div class="col-auto text-center">
-          <button type="button" id="btn-modify" class="btn btn-outline-primary mb-3">글수정</button>
+          <button type="submit" id="btn-modify" class="btn btn-outline-primary mb-3">글수정</button>
           <router-link to="/board">
-          <button type="button" id="btn-list" class="btn btn-outline-danger mb-3">목록으로이동...</button>
-        </router-link>
+            <button type="button" id="btn-list" class="btn btn-outline-danger mb-3">목록으로이동...</button>
+          </router-link>
         </div>
       </form>
     </div>

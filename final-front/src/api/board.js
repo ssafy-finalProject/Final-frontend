@@ -5,9 +5,7 @@ const Rest = RestAxios();
 const url = "/board";
 
 function listArticle(key, word, pgno, success, fail) {
-  Rest.get(`${url}?key=${key}&word=${word}&pgno=${pgno}`)
-    .then(success)
-    .catch(fail);
+  Rest.get(`${url}/list?key=${key}&word=${word}&pgno=${pgno}`).then(success).catch(fail);
 }
 
 function listArticle2(succes, fail) {

@@ -49,7 +49,7 @@ onMounted(()=>{
         </div>
         <div class="col-lg-8 col-md-10 col-sm-12">
           <div class="row my-2">
-            <h2 class="text-secondary px-5">{{boardArticle.article_no}}. {{boardArticle.subject}}</h2>
+            <h1 class="text-secondary px-5">{{boardArticle.article_no}}. {{boardArticle.subject}}</h1>
           </div>
           <div class="row">
             <div class="col-md-8">
@@ -60,14 +60,15 @@ onMounted(()=>{
                 />
                 <p>
                   <p class="fw-bold">{{boardArticle.user_id}}</p> <br />
-                  <span class="text-secondary fw-light"> {{boardArticle.register_time}} 조회 : {{boardArticle.hit}} </span>
+                  <span class="text-secondary fw-light"> 작성날짜 : {{boardArticle.register_time}}  
+                    <div>조회 : {{boardArticle.hit}}</div> </span>
                 </p>
               </div>
             </div>
-            <div class="col-md-4 align-self-center text-end">댓글 : 17</div>
+            <!-- <div class="col-md-4 align-self-center text-end">댓글 : 17</div> -->
             <div class="divider mb-3"></div>
             <div class="text-secondary">
-              {{boardArticle.content}}
+              <h2>{{boardArticle.content}}</h2>
             </div>
             <div class="divider mt-3 mb-3"></div>
             <div class="d-flex justify-content-end">
