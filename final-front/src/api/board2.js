@@ -21,7 +21,7 @@ function getArticle(articleno, success, fail) {
 }
 
 function modifyArticle(articleno, boardInfo, success, fail) {
-  Rest.put(`${url}/` + articleno, articleno, JSON.stringify(boardInfo))
+  Rest.put(`${url}/` + articleno, JSON.stringify(boardInfo))
     .then(success)
     .catch(fail);
 }

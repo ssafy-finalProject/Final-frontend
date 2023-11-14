@@ -3,12 +3,12 @@ import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { getArticle, modifyArticle } from "@/api/board2";
 const boardArticle = ref({
-  user_id: "",
   article_no: "",
+  user_id: "",
   subject: "",
   content: "",
-  register_time: "",
   hit: "",
+  register_time: "",
 });
 const router = useRouter();
 const route = useRoute();
@@ -37,13 +37,14 @@ const onSubmit = () => {
     boardArticle.value.article_no,
     boardArticle.value,
     (success) => {
-      console.log("나나나" + JSON.stringify(success.data));
+      console.log("리스폰스" + JSON.stringify(success.data));
       //pass.value = success.data.userPass;
     },
     (fail) => {
       console.log(fail);
     }
   );
+  router.push("/board");
 };
 </script>
 
