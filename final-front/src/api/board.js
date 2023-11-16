@@ -13,7 +13,7 @@ function listArticle(key, word, pgno, success, fail) {
 }
 
 function writeArticle(boardInfo, success, fail) {
-  Rest.post(`${url}`, boardInfo).then(success).catch(fail);
+  Rest.post(`${url}`, JSON.stringify(boardInfo)).then(success).catch(fail);
 }
 
 function deleteArticle(articleno, success, fail) {
@@ -33,4 +33,10 @@ function modifyArticle(articleno, boardInfo, success, fail) {
     .then(success)
     .catch(fail);
 }
-export { listArticle, totalArticle, writeArticle, deleteArticle, getArticle, modifyArticle };
+
+function getMaxArticle(success, fail) {
+  Rest.get(`${url}/` + "maxArticle")
+    .then(success)
+    .catch(fail);
+}
+export { listArticle, totalArticle, writeArticle, deleteArticle, getArticle, modifyArticle, getMaxArticle };
