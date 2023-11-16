@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from "vue";
-import { writeArticle, getMaxArticle } from "@/api/board";
+import { writeArticle } from "@/api/board";
 let tempid = JSON.parse(localStorage.getItem("userinfo")).userId;
 const feedArticle = ref({
   user_id: tempid,
@@ -19,33 +19,29 @@ const handleFileChange = (event) => {
   // }
 };
 
-const onSubmit = async () => {
+const onSubmit = () => {
   console.log("게시글 업로드중!");
-
+  console.log("넘길 유저 아이디 "+feedArticle.value.user_id);
+  console.log("넘길 제목 "+feedArticle.value.subject);
+  console.log("넘길 내용 "+feedArticle.value.content);
+  Imagefiles.value.forEach((ele)=>{
+    console.log("넘길 파일 "+ele);
+  });
   //무조건 글과 내용이 들어간 후에 사진업로드가 실행 되어야함
-  await writeArticle(
-    feedArticle.value,
-    (successMsg) => {
-      console.log("hi");
-      //console.log(successMsg);
-    },
-    (error) => {
-      console.log(error);
-    }
+  let data= new FormData();
+  data.append('user_id',feedArticle.value.user_id);
+  data.append('subject',feedArticle.value.subject);
+  data.append('content',feedArticle.value.content);
+  Imagefiles.value.forEach((ele)=>{
+    data.append('files',ele);
+  });
+  writeArticle(data,(success)=>{
+    console.log(success);
+  },
+  (fail)=>{
+    console.log(fail);
+  }
   );
-
-  await getMaxArticle(
-    (successMsg) => {
-      console.log("hihi");
-      console.log("최대값은" + successMsg.data);
-      feedArticle.value.article_no = successMsg.data;
-      console.log("맥스에선 들어갔다" + feedArticle.value.article_no);
-    },
-    (error) => {
-      console.log(error);
-    }
-  );
-  //router.push("list");
 };
 </script>
 

@@ -12,8 +12,8 @@ function listArticle(key, word, pgno, success, fail) {
   Rest.get(`${url}/list?key=${key}&word=${word}&pgno=${pgno}`).then(success).catch(fail);
 }
 
-function writeArticle(boardInfo, success, fail) {
-  Rest.post(`${url}`, JSON.stringify(boardInfo)).then(success).catch(fail);
+function writeArticle(data, success, fail) {
+  Rest.post(`${url}`, data).then(success).catch(fail);
 }
 
 function deleteArticle(articleno, success, fail) {
@@ -33,10 +33,4 @@ function modifyArticle(articleno, boardInfo, success, fail) {
     .then(success)
     .catch(fail);
 }
-
-function getMaxArticle(success, fail) {
-  Rest.get(`${url}/` + "maxArticle")
-    .then(success)
-    .catch(fail);
-}
-export { listArticle, totalArticle, writeArticle, deleteArticle, getArticle, modifyArticle, getMaxArticle };
+export { listArticle, totalArticle, writeArticle, deleteArticle, getArticle, modifyArticle };
