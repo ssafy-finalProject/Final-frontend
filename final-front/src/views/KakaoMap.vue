@@ -3,6 +3,7 @@ import { ref, watch, onMounted } from "vue";
 import TravelList from "../components/map/TravelList.vue";
 
 var map;
+var realData = ref([]);
 const searchKeyword = ref("");
 const positions = ref([]);
 const markers = ref([]);
@@ -58,15 +59,18 @@ const initMap = () => {
   infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
 };
 
+
 // 키워드 검색 완료 시 호출되는 콜백함수 입니다
 function placesSearchCB(data, status, pagination) {
   if (status === kakao.maps.services.Status.OK) {
     // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
     // LatLngBounds 객체에 좌표를 추가합니다
     var bounds = new kakao.maps.LatLngBounds();
+    realData = data;
 
     for (var i = 0; i < data.length; i++) {
       // console.log(data[i]);
+      // console.log(realData[i]);
       displayMarker(data[i]);
       bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
     }
@@ -77,9 +81,13 @@ function placesSearchCB(data, status, pagination) {
 }
 
 function sendMarkerInfo(place) {
-  markers.value = place;
-  console.log(markers);
-  <TravelList v-for="marker in markers" :key="marker.id" :marker="marker"/>
+  if (markers.value.length === 1) {
+    markers.value.pop();
+    // console.log(markers.value.length);
+  }
+  markers.value.push(place);
+  // console.log(markers.value.length);
+  // console.log(markers);
 }
 
 // 지도에 마커를 표시하는 함수입니다
@@ -90,7 +98,9 @@ function displayMarker(place) {
     position: new kakao.maps.LatLng(place.y, place.x),
   });
 
-  console.log(place);
+  // console.log(place);
+
+  
 
   // 마커에 클릭이벤트를 등록합니다
   kakao.maps.event.addListener(marker, "click", function () {
@@ -99,7 +109,7 @@ function displayMarker(place) {
       '<div style="padding:5px;font-size:12px;text-align=center">' +
         place.place_name +
         "</div>" +
-        '<div><button id="infoBtn" onclick="sendMarkerInfoHandler()">' +
+        `<div><button id="infoBtn" onclick="sendMarkerInfoHandler(${place.id})">` +
         "추가" +
         "</div>"
     );
@@ -107,7 +117,14 @@ function displayMarker(place) {
     infowindow.open(map, marker);
   });
   // 버튼 클릭 이벤트 핸들러 추가
-  window.sendMarkerInfoHandler = function () {
+  window.sendMarkerInfoHandler = function (id) {
+    console.log(id);
+    for (let i = 0; i < realData.length; i++){
+      // console.log(realData[i].id);
+      if (realData[i].id == id) {
+        console.log("현재 찾은 도시이름 : " + realData[i].address_name);
+      }
+    }
     sendMarkerInfo(place);
   };
 }
@@ -120,7 +137,7 @@ function displayMarker(place) {
     </div>
     <div class="container-fluid row">
       <div id="map" class="col-8"></div>
-      <TravelList class="col-4" />
+      <TravelList :markers="markers" class="col-4"/>
     </div>
   </div>
 </template>
