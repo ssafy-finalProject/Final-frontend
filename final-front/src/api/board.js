@@ -1,7 +1,7 @@
-import { RestAxios } from "@/util/http-commons";
+import { RestAxios, FormAxios } from "@/util/http-commons";
 
 const Rest = RestAxios();
-
+const anotherRest = FormAxios();
 const url = "/board";
 
 function totalArticle(success, fail) {
@@ -13,7 +13,7 @@ function listArticle(key, word, pgno, success, fail) {
 }
 
 function writeArticle(data, success, fail) {
-  Rest.post(`${url}`, data).then(success).catch(fail);
+  anotherRest.post(`${url}`, data).then(success).catch(fail);
 }
 
 function deleteArticle(articleno, success, fail) {

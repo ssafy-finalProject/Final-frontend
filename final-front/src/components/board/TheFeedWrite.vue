@@ -11,40 +11,50 @@ const feedArticle = ref({
 
 const Imagefiles = ref([]);
 
+const imageUrl = ref([]);
+
 const handleFileChange = (event) => {
+  imageUrl.value.length = 0;
   // 파일이 변경될 때마다 selectedFiles 배열 업데이트
   Imagefiles.value = Array.from(event.target.files);
-  // for (let i = 0; i < Imagefiles.value.length; i++) {
-  //   console.log(Imagefiles.value[i]);
-  // }
+  if (Imagefiles.value.length != 0) {
+    for (let i = 0; i < Imagefiles.value.length; i++) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        imageUrl.value[i] = e.target.result;
+      };
+      reader.readAsDataURL(Imagefiles.value[i]);
+    }
+  }
 };
 
 const onSubmit = () => {
   console.log("게시글 업로드중!");
-  console.log("넘길 유저 아이디 "+feedArticle.value.user_id);
-  console.log("넘길 제목 "+feedArticle.value.subject);
-  console.log("넘길 내용 "+feedArticle.value.content);
-  Imagefiles.value.forEach((ele)=>{
-    console.log("넘길 파일 "+ele);
+  console.log("넘길 유저 아이디 " + feedArticle.value.user_id);
+  console.log("넘길 제목 " + feedArticle.value.subject);
+  console.log("넘길 내용 " + feedArticle.value.content);
+  Imagefiles.value.forEach((ele) => {
+    console.log("넘길 파일 " + ele);
   });
   //무조건 글과 내용이 들어간 후에 사진업로드가 실행 되어야함
-  let data= new FormData();
-  data.append('user_id',feedArticle.value.user_id);
-  data.append('subject',feedArticle.value.subject);
-  data.append('content',feedArticle.value.content);
-  Imagefiles.value.forEach((ele)=>{
-    data.append('files',ele);
+  let data = new FormData();
+  data.append("user_id", feedArticle.value.user_id);
+  data.append("subject", feedArticle.value.subject);
+  data.append("content", feedArticle.value.content);
+  Imagefiles.value.forEach((ele) => {
+    data.append("files", ele);
   });
-  writeArticle(data,(success)=>{
-    console.log(success);
-  },
-  (fail)=>{
-    console.log(fail);
-  }
+  writeArticle(
+    data,
+    (success) => {
+      console.log(success);
+    },
+    (fail) => {
+      console.log(fail);
+    }
   );
 };
 </script>
-
 <template>
   <div class="rightPage">
     <form class="upload-form" @submit.prevent="onSubmit">
@@ -55,6 +65,9 @@ const onSubmit = () => {
         </div>
         <h4>사진 업로드</h4>
         <div class="form-group">
+          <div v-for="(url, index) in imageUrl" :key="index">
+            <img :src="url" alt="Preview" style="max-width: 50%; max-height: 150px" />
+          </div>
           <label for="image">이미지 선택:</label>
           <input
             type="file"
