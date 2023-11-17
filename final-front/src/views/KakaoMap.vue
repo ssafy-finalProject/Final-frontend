@@ -13,19 +13,20 @@ const destination = ref([]); // 도착지
 
 // 부모가 자식의 이벤트 처리에 대한 listen 처리
 const listenList = ({
-  markers: newMarkers,
-  stopover: newStopover,
-  destination: newDestination,
+  // markers: newMarkers,
+  // stopover: newStopover,
+  // destination: newDestination,
 }) => {
+  
   // polyline이 그려져 있으면 값을 비운다.
   if (polyline) {
     polyline.setMap(null);
     console.log(polyline);
   }
   // 배열 비우기
-  markers.value = [...newMarkers];
-  stopover.value = [...newStopover];
-  destination.value = [...newDestination];
+  // markers.value = [...newMarkers];
+  // stopover.value = [...newStopover];
+  // destination.value = [...newDestination];
   console.log(markers, stopover, destination);
 
   var linePath = [];
@@ -53,6 +54,13 @@ const listenList = ({
   polyline.setMap(map);
   // 선을 구성하는 좌표 배열입니다. 이 좌표들을 이어서 선을 표시합니다
 }; // 기존의 배열 값을 전부 비우고, emit 받은 값들로 전부 replace 한다.
+
+const removeStopover = (stop) => {
+  const index = stopover.value.indexOf(stop);
+  if (index !== -1) {
+    stopover.value.splice(index, 1);
+  }
+};
 
 var ps;
 var infowindow;
@@ -212,6 +220,7 @@ function displayMarker(place) {
         :destination="destination"
         class="col-4"
         @send-list="listenList"
+        @remove-stopover="removeStopover"
       />
       <!--자식에서 부모에게 send-list라는 이벤트를 발생했는데, 그걸 listen을 통해서 듣고 잇다가, 발생하면 이제 함수 처리한다.-->
     </div>

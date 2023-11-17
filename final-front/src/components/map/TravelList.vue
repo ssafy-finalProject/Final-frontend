@@ -20,20 +20,13 @@ const changeActivekey = (key: string) => {
 
 const sendDataList = () => {
   console.log(markers, stopover, destination); // markers, stopover, destination 정보들을 보낸다.
-  emit("send-list", {
-    markers: markers,
-    stopover: stopover,
-    destination: destination,
-  }); // parent 배열에 3개의 인자값을 보내줘야 할 필요가 없다?
+  emit("send-list", {}); // parent 배열에 3개의 인자값을 보내줘야 할 필요가 없다?
 };
 
 const removeStopover = (stop) => {
   // stopover 배열에서 해당 항목을 제거
   console.log(stopover.length);
-  const index = stopover.indexOf(stop);
-  if (index !== -1) {
-    stopover.splice(index, 1);
-  }
+  emit("remove-stopover", stop);
 };
 // removeStopover를 부모로 올려보내야 한다. 코드 수정이 필요.
 </script>
@@ -47,7 +40,7 @@ const removeStopover = (stop) => {
     <a-collapse-panel key="1" header="시작점">
       <a-collapse default-active-key="4">
         <a-collapse-panel key="4" header="넣을 패널">
-          <div v-for="marker in markers" :key="marker.id">
+          <div v-for="marker in markers" :key="marker.id">  
             <p>{{ marker.place_name }}</p>
           </div>
         </a-collapse-panel>
