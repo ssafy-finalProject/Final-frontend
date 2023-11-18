@@ -1,23 +1,31 @@
 <script setup>
 import { ref, watch, onMounted } from "vue";
 import TravelList from "../components/map/TravelList.vue";
+import { registerDetail } from "@/api/map"; 
 
 var map;
 var realData = ref([]);
 let polyline;
 const searchKeyword = ref("");
-
 const markers = ref([]); // 시작지
 const stopover = ref([]); // 경유지
 const destination = ref([]); // 도착지
 
+const requestSend = () => {
+  const dataToSend = {
+    markers: transformData(markers),
+    stopover: transformData(stopover),
+    destination: transformData(destination),
+  };
+
+  console.log(dataToSend); // 정보를 컨버전해서 dto의 스펙과 맞게 변환하기
+
+  registerDetail()
+}
+
 // 부모가 자식의 이벤트 처리에 대한 listen 처리
-const listenList = ({
-  // markers: newMarkers,
-  // stopover: newStopover,
-  // destination: newDestination,
-}) => {
-  
+const listenList = () => {
+
   // polyline이 그려져 있으면 값을 비운다.
   if (polyline) {
     polyline.setMap(null);
@@ -54,6 +62,15 @@ const listenList = ({
   polyline.setMap(map);
   // 선을 구성하는 좌표 배열입니다. 이 좌표들을 이어서 선을 표시합니다
 }; // 기존의 배열 값을 전부 비우고, emit 받은 값들로 전부 replace 한다.
+
+// data Conversion 의 필요성을 가지고, 작성하는 함수
+const transformData = (data) => {
+    return {
+      place_name: data.value[0].place_name,
+      latitude: parseFloat(data.value[0].y),
+      longitude: parseFloat(data.value[0].x),
+    };
+  };
 
 const removeStopover = (stop) => {
   const index = stopover.value.indexOf(stop);
@@ -224,6 +241,8 @@ function displayMarker(place) {
       />
       <!--자식에서 부모에게 send-list라는 이벤트를 발생했는데, 그걸 listen을 통해서 듣고 잇다가, 발생하면 이제 함수 처리한다.-->
     </div>
+    <button id="determine" @click="requestSend">최종 결정</button>
+    <!-- 최종 결정을 눌렀을 때에, 현재의 시작지, 경유지, 도착지를 기준으로 post로 서버에 보내준다.-->
   </div>
 </template>
 <style scoped>
@@ -256,5 +275,12 @@ function displayMarker(place) {
 .infowindow-buttons button {
   flex-grow: 1;
   margin: 0 2px;
+}
+
+#determine {
+  margin: 2px;
+  width: 90px;
+  justify-content: center;
+  float : right;
 }
 </style>
