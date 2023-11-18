@@ -1,13 +1,19 @@
 <script setup>
-import VSelect from "../common/VSelect.vue";
 import PageNavigation from "../common/PageNavigation.vue";
-import BoardListItem from "./item/BoardListItem.vue";
-import { listArticle, totalArticle } from "@/api/board";
-
+import TheFeedListItem from "./item/TheFeedListItem.vue";
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
+import { listMyArticle } from "../../api/board";
 
+const userInfo = ref(null);
 onMounted(() => {
+  if (localStorage.length != 0) {
+    const tmp = JSON.parse(localStorage.getItem("userinfo"));
+    if (tmp) {
+      userInfo.value = tmp;
+    }
+  }
+  console.log("확인");
   getArticleList();
 });
 
@@ -17,6 +23,8 @@ const currentPage = ref(1);
 const totalPage = ref(0);
 const { VITE_ARTICLE_LIST_SIZE } = import.meta.env;
 const articles = ref([]);
+
+
 
 const selectOption = ref([
   { text: "검색조건", value: "" },
@@ -28,26 +36,19 @@ const selectOption = ref([
 const param = ref({
   pgno: currentPage.value,
   spp: VITE_ARTICLE_LIST_SIZE,
-  key: "",
   word: "",
 });
 
-// console.log(param.value.pgno);
-const changeKey = (val) => {
-  console.log(val);
-  param.value.key = val;
-};
-
 const moveWrite = () => {
-  router.push({ name: "boardwrite" });
+  router.push({ name: "myfeedwrite" });
 };
 
 const getArticleList = () => {
   // console.log("서버에서 글 목록 얻어오기", param.value);
-  console.log(param.value.key + " " + param.value.word + " " + currentPage.value);
+  console.log(param.value.word + " " + currentPage.value);
   // AXIOS 를 통한 동기 작업 필요
-  listArticle(
-    param.value.key,
+  listMyArticle(
+    userInfo.value.userId,
     param.value.word,
     currentPage.value,
     ({ data }) => {
@@ -87,7 +88,7 @@ const onPageChange = (val) => {
           </div>
           <div class="col-md-5 offset-5">
             <form class="d-flex">
-              <VSelect :selectOption="selectOption" @onKeySelect="changeKey" />
+              <!-- <VSelect :selectOption="selectOption" @onKeySelect="changeKey" /> -->
               <div class="input-group input-group-sm">
                 <input type="text" class="form-control" v-model="param.word" placeholder="검색어..." />
                 <button class="btn btn-dark" type="button" @click="getArticleList">검색</button>
@@ -106,7 +107,7 @@ const onPageChange = (val) => {
             </tr>
           </thead>
           <tbody>
-            <BoardListItem v-for="article in articles" :key="article.article_no" :article="article"></BoardListItem>
+            <TheFeedListItem v-for="article in articles" :article="article"></TheFeedListItem>
             <!-- BoardListItem에 들어갈 articles도 axios통신을 통해 얻어와야 함.-->
           </tbody>
         </table>

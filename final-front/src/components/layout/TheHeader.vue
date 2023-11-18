@@ -33,7 +33,7 @@ onMounted(() => {
           <li class="nav-item"><a class="nav-link" href="#">공지사항</a></li>
           <li class="nav-item">
             <!-- <a class="nav-link" href="${root}/article/list?pgno=1&key=&word="> -->
-            <a class="nav-link"> <router-link :to="{ name: 'board' }"> 여행지 추천 </router-link></a>
+            <!-- <a class="nav-link"> <router-link :to="{ name: 'board' }"> 여행지 추천 </router-link></a> -->
           </li>
           <li class="nav-item"><a class="nav-link" href="#">여행 후기</a></li>
           <li class="nav-item">
@@ -69,12 +69,14 @@ onMounted(() => {
               <a class="nav-link">마이페이지</a>
             </router-link>
           </li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">관리자</a>
-            <ul class="dropdown-menu">
+          <li class="nav-item">
+            <router-link to="/myfeed">
+              <a class="nav-link" >나의 게시글</a>
+          </router-link>
+            <!-- <ul class="dropdown-menu">
               <li><a class="dropdown-item" href="#">회원 관리</a></li>
               <li><a class="dropdown-item" href="#">게시물 관리</a></li>
-            </ul>
+            </ul> -->
           </li>
         </ul>
         <!-- </c:otherwise>

@@ -33,4 +33,9 @@ function modifyArticle(articleno, boardInfo, success, fail) {
     .then(success)
     .catch(fail);
 }
-export { listArticle, totalArticle, writeArticle, deleteArticle, getArticle, modifyArticle };
+
+function listMyArticle(id, word, pgno, success, fail) {
+  Rest.get(`${url}/mylist?id=${id}&word=${word}&pgno=${pgno}`).then(success).catch(fail);
+}
+
+export { listArticle, totalArticle, writeArticle, deleteArticle, getArticle, modifyArticle, listMyArticle };

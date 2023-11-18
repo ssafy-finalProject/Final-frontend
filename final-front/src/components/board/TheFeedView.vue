@@ -30,9 +30,10 @@ onMounted(async () => {
     if (boardArticle.value.dtos.length !== 0) {
       console.log("이프이프");
       console.log("패쓰:" + boardArticle.value.dtos[0].path);
-      const response = Rest.get(
-        "/board/" + boardArticle.value.dtos[0].path + "/" + boardArticle.value.dtos[0].originalFileName
-      );
+      //사진받아오기
+      // const response = Rest.get(
+      //   "/board/" + boardArticle.value.dtos[0].path + "/" + boardArticle.value.dtos[0].originalFileName
+      // );
       //imagePath = response.data.url;
       // for (let i = 0; i < boardArticle.value.dtos.length; i++) {
       //   const reader = new FileReader();
@@ -48,7 +49,7 @@ onMounted(async () => {
     console.log(fail);
   };
 
-  await getArticle(34, successCallback, errorCallback);
+  await getArticle(6, successCallback, errorCallback);
 
   // await getArticle(
   //   33,

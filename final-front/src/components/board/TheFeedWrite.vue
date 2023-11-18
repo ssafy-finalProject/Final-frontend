@@ -1,6 +1,8 @@
 <script setup>
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 import { writeArticle } from "@/api/board";
+const router = useRouter();
 let tempid = JSON.parse(localStorage.getItem("userinfo")).userId;
 const feedArticle = ref({
   user_id: tempid,
@@ -53,6 +55,7 @@ const onSubmit = () => {
       console.log(fail);
     }
   );
+  router.push("list");
 };
 </script>
 <template>
