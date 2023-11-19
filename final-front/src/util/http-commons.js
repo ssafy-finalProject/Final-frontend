@@ -13,6 +13,14 @@ function RestAxios() {
   });
   return instance;
 }
+function FormAxios() {
+  const instance = axios.create({
+    baseURL: VITE_REST_API_URL,
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  return instance;
+}
 
-
-export { RestAxios };
+export { RestAxios , FormAxios};

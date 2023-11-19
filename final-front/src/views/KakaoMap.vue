@@ -13,14 +13,29 @@ const destination = ref([]); // 도착지
 
 const requestSend = () => {
   const dataToSend = {
-    markers: transformData(markers),
-    stopover: transformData(stopover),
-    destination: transformData(destination),
-  };
+    markers: transformData(markers, '시작지'),
+    stopover: transformData(stopover, '경유지'),
+    destination: transformData(destination, '도착지'),
+  }; // api 스펙은 place_name, latitude, longitude, category로 설정됨.
 
-  console.log(dataToSend); // 정보를 컨버전해서 dto의 스펙과 맞게 변환하기
 
-  registerDetail()
+  let data = new FormData();
+  // console.log(dataToSend.markers);
+  // console.log(dataToSend.stopover);
+  // console.log(dataToSend.destination);
+  data.append('markers', JSON.stringify(dataToSend.markers));
+  data.append('stopover', JSON.stringify(dataToSend.stopover));
+  data.append('destination', JSON.stringify(dataToSend.destination));
+  
+  registerDetail(
+    data,
+    (successMsg) => {
+      console.log(successMsg);
+    },
+    (error) => {
+      console.log(error);
+    }
+  )
 }
 
 // 부모가 자식의 이벤트 처리에 대한 listen 처리
@@ -64,13 +79,23 @@ const listenList = () => {
 }; // 기존의 배열 값을 전부 비우고, emit 받은 값들로 전부 replace 한다.
 
 // data Conversion 의 필요성을 가지고, 작성하는 함수
-const transformData = (data) => {
+const transformData = (data, type) => {
+  if (data.value.length === 1) {
     return {
-      place_name: data.value[0].place_name,
-      latitude: parseFloat(data.value[0].y),
-      longitude: parseFloat(data.value[0].x),
-    };
-  };
+        place_name: data.value[0].place_name,
+        latitude: parseFloat(data.value[0].y),
+        longitude: parseFloat(data.value[0].x),
+        category : type,
+      };    
+  } else {
+    return data.value.map(item => ({
+      place_name: item.place_name,
+        latitude: parseFloat(item.y),
+        longitude: parseFloat(item.x),
+        category : type,
+    }))
+  }
+  }; // detailDto에 대한 수정이 필요
 
 const removeStopover = (stop) => {
   const index = stopover.value.indexOf(stop);

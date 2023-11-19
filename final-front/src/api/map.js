@@ -1,11 +1,11 @@
-import { RestAxios } from "@/util/http-commons";
+import { RestAxios,FormAxios } from "@/util/http-commons";
 
 const Rest = RestAxios();
-
+const Form = FormAxios();
 const url = "/detail/";
 
-function registerDetail(detailDto, success, fail) {
-    Rest.post(`${url}`, detailDto).then(success).catch(fail);
+function registerDetail(data, success, fail) {
+    Form.post(`${url}`, data).then(success).catch(fail);
 }
 
 // function initAndGetSidoList(success, fail){
