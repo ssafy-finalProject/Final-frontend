@@ -1,24 +1,16 @@
 <script setup>
 import { ref, onMounted } from "vue";
-
-const userInfo = ref(null);
-const logout = () => {
-  localStorage.removeItem("userinfo");
-};
+import { useAuthStore} from '../../stores/userStore';
+const authStore = useAuthStore();
+const {piniaUser,piniaLogout} = authStore;
 
 onMounted(() => {
-  if (localStorage.length != 0) {
-    const tmp = JSON.parse(localStorage.getItem("userinfo"));
-    if (tmp) {
-      userInfo.value = tmp;
-    }
-    console.log("현재 로그인 정보는" + userInfo.value.userId);
-  }
+  //console.log("현재 로그인 정보는" + piniaUser.value.userId);
 });
 </script>
 
 <template>
-  <nav class="navbar navbar-expand-lg bg-light navbar-light">
+  <nav class="navbar navbar-expand-lg bg-li ght navbar-light">
     <div class="container">
       <a class="navbar-brand">
         <router-link :to="{ name: 'main' }">
@@ -42,14 +34,14 @@ onMounted(() => {
         </ul>
         <!-- <c:choose>
         <c:when test="${empty userInfo.userId }"> -->
-        <ul v-if="!userInfo" class="navbar-nav">
+        <ul v-if="!piniaUser.isLoginned" class="navbar-nav">
           <li class="nav-item">
-            <router-link to="/login">
+            <router-link to="/login" class="text-decoration-none">
               <a class="nav-link">로그인</a>
             </router-link>
           </li>
           <li class="nav-item">
-            <router-link to="/register">
+            <router-link to="/register" class="text-decoration-none">
               <a class="nav-link">회원가입</a>
             </router-link>
           </li>
@@ -59,18 +51,18 @@ onMounted(() => {
         <!-- <c:otherwise> -->
         <ul v-else class="navbar-nav">
           <li class="nav-item">
-            <a class="nav-link disabled">{{ userInfo.userId }}님 반갑습니다.</a>
+            <a class="nav-link disabled">{{ piniaUser.userId }}님 반갑습니다.</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" @click="logout">로그아웃</a>
+            <a class="nav-link" href="#" @click="piniaLogout">로그아웃</a>
           </li>
           <li class="nav-item">
-            <router-link to="/mypage">
+            <router-link to="/mypage" class="text-decoration-none">
               <a class="nav-link">마이페이지</a>
             </router-link>
           </li>
           <li class="nav-item">
-            <router-link to="/myfeed">
+            <router-link to="/myfeed" class="text-decoration-none">
               <a class="nav-link" >나의 게시글</a>
           </router-link>
             <!-- <ul class="dropdown-menu">

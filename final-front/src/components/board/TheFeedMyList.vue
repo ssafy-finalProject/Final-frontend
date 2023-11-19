@@ -4,16 +4,10 @@ import TheFeedListItem from "./item/TheFeedListItem.vue";
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { listMyArticle } from "../../api/board";
-
-const userInfo = ref(null);
+import { useAuthStore} from '../../stores/userStore';
+const authStore = useAuthStore();
+const {piniaUser} = authStore;
 onMounted(() => {
-  if (localStorage.length != 0) {
-    const tmp = JSON.parse(localStorage.getItem("userinfo"));
-    if (tmp) {
-      userInfo.value = tmp;
-    }
-  }
-  console.log("확인");
   getArticleList();
 });
 
@@ -48,7 +42,7 @@ const getArticleList = () => {
   console.log(param.value.word + " " + currentPage.value);
   // AXIOS 를 통한 동기 작업 필요
   listMyArticle(
-    userInfo.value.userId,
+    piniaUser.userId,
     param.value.word,
     currentPage.value,
     ({ data }) => {

@@ -2,10 +2,12 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { writeArticle } from "@/api/board";
+import { useAuthStore} from '../../stores/userStore';
+const authStore = useAuthStore();
+const {piniaUser} = authStore;
 const router = useRouter();
-let tempid = JSON.parse(localStorage.getItem("userinfo")).userId;
 const feedArticle = ref({
-  user_id: tempid,
+  user_id: piniaUser.userId,
   article_no: "",
   subject: "",
   content: "",
