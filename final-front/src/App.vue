@@ -7,13 +7,19 @@ import TheMap from "./components/map/TheMap.vue";
 import KakaoMap from "./views/KakaoMap.vue";
 import TheBoardWrite from "./components/board/TheBoardWrite.vue";
 import TheBoardView from "./components/board/TheBoardView.vue";
+import TheFeedWrite from "./components/board/TheFeedWrite.vue";
+import TheFeedView from "./components/board/TheFeedView.vue";
+import TheFeedMyList from "./components/board/TheFeedMyList.vue";
 </script>
 
 <template>
   <div>
     <TheHeader></TheHeader>
+    <!-- <TheFeedMyList></TheFeedMyList> -->
+    <!-- <TheFeedView></TheFeedView> -->
+    <!-- <TheFeedWrite></TheFeedWrite> -->
     <!-- <TheBoardView/> -->
-    <!-- <TheBoardWrite/> -->
+    <!-- <TheBoardWrite /> -->
     <!-- <TheMap></TheMap> -->
     <!-- <KakaoMap></KakaoMap> -->
     <router-view></router-view>

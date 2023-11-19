@@ -1,7 +1,7 @@
-import { RestAxios } from "@/util/http-commons";
+import { RestAxios, FormAxios } from "@/util/http-commons";
 
 const Rest = RestAxios();
-
+const anotherRest = FormAxios();
 const url = "/board";
 
 function totalArticle(success, fail) {
@@ -12,8 +12,8 @@ function listArticle(key, word, pgno, success, fail) {
   Rest.get(`${url}/list?key=${key}&word=${word}&pgno=${pgno}`).then(success).catch(fail);
 }
 
-function writeArticle(boardInfo, success, fail) {
-  Rest.post(`${url}`, boardInfo).then(success).catch(fail);
+function writeArticle(data, success, fail) {
+  anotherRest.post(`${url}`, data).then(success).catch(fail);
 }
 
 function deleteArticle(articleno, success, fail) {
@@ -33,4 +33,9 @@ function modifyArticle(articleno, boardInfo, success, fail) {
     .then(success)
     .catch(fail);
 }
-export { listArticle, totalArticle, writeArticle, deleteArticle, getArticle, modifyArticle };
+
+function listMyArticle(id, word, pgno, success, fail) {
+  Rest.get(`${url}/mylist?id=${id}&word=${word}&pgno=${pgno}`).then(success).catch(fail);
+}
+
+export { listArticle, totalArticle, writeArticle, deleteArticle, getArticle, modifyArticle, listMyArticle };
