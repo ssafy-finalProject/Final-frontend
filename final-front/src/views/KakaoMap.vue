@@ -20,12 +20,12 @@ const requestSend = () => {
 
 
   let data = new FormData();
-  // console.log(dataToSend.markers);
+  console.log(dataToSend.markers);
   // console.log(dataToSend.stopover);
   // console.log(dataToSend.destination);
-  data.append('markers', JSON.stringify(dataToSend.markers));
-  data.append('stopover', JSON.stringify(dataToSend.stopover));
-  data.append('destination', JSON.stringify(dataToSend.destination));
+  data.append('markers', dataToSend.markers);
+  data.append('stopover', dataToSend.stopover);
+  data.append('destination', dataToSend.destination);
   
   registerDetail(
     data,
