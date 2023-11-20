@@ -3,7 +3,6 @@ import TheHeader from "./components/layout/TheHeader.vue";
 import TheFooter from "./components/layout/TheFooter.vue";
 import TheMain from "./views/TheMain.vue";
 import TheLogin from "./components/member/TheLogin.vue";
-import TheMap from "./components/map/TheMap.vue";
 import KakaoMap from "./views/KakaoMap.vue";
 import TheBoardWrite from "./components/board/TheBoardWrite.vue";
 import TheBoardView from "./components/board/TheBoardView.vue";
@@ -15,14 +14,12 @@ import TheFeedMyList from "./components/board/TheFeedMyList.vue";
 <template>
   <div>
     <TheHeader></TheHeader>
-    <!-- <TheFeedMyList></TheFeedMyList> -->
-    <!-- <TheFeedView></TheFeedView> -->
-    <!-- <TheFeedWrite></TheFeedWrite> -->
+    <KakaoMap></KakaoMap>
     <!-- <TheBoardView/> -->
     <!-- <TheBoardWrite /> -->
     <!-- <TheMap></TheMap> -->
     <!-- <KakaoMap></KakaoMap> -->
-    <router-view></router-view>
+    <!-- <router-view></router-view> -->
     <!-- <TheFooter></TheFooter> -->
   </div>
 </template>

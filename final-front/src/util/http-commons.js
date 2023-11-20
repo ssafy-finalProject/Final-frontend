@@ -13,7 +13,6 @@ function RestAxios() {
   });
   return instance;
 }
-
 function FormAxios() {
   const instance = axios.create({
     baseURL: VITE_REST_API_URL,
@@ -24,4 +23,4 @@ function FormAxios() {
   return instance;
 }
 
-export { RestAxios, FormAxios };
+export { RestAxios , FormAxios};
