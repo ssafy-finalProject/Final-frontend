@@ -8,6 +8,18 @@ function registerDetail(data, success, fail) {
   Rest.post(`${url}`, data).then(success).catch(fail);
 }
 
+function listDetail(articleNo, success, fail) {
+  Rest.get(`${url}`, articleNo).then(success).catch(fail);
+}
+
+function findDetail(placeName, success, fail) {
+  Rest.get(`${url}`, placeName).then(success).catch(fail);
+}
+
+function modifyDetail(detailDto, success, fail) {
+  Rest.put(`${url}`, JSON.stringify(detailDto)).then(success).catch(fail);
+}
+
 // function initAndGetSidoList(success, fail){
 //     Rest.get(`att/newpage`).then(success).catch(fail);
 // }
@@ -20,4 +32,4 @@ function registerDetail(data, success, fail) {
 //     Rest.get(`att/getGugun/`+sidocode+`/`+guguncode+`/`+keyword).then(success).catch(fail);
 // }
 
-export { registerDetail };
+export { registerDetail, listDetail, findDetail, modifyDetail };
