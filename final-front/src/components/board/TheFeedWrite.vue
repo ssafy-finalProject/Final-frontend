@@ -142,12 +142,14 @@ const listenList = () => {
 // data Conversion 의 필요성을 가지고, 작성하는 함수
 const transformData = (data, type) => {
   if (data.value.length === 1) {
-    return {
-      place_name: data.value[0].place_name,
-      latitude: parseFloat(data.value[0].y),
-      longitude: parseFloat(data.value[0].x),
-      category: type,
-    };
+    return [
+      {
+        place_name: data.value[0].place_name,
+        latitude: parseFloat(data.value[0].y),
+        longitude: parseFloat(data.value[0].x),
+        category: type,
+      },
+    ];
   } else {
     return data.value.map((item) => ({
       place_name: item.place_name,
