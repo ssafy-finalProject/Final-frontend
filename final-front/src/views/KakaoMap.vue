@@ -1,7 +1,7 @@
 <script setup>
 import { ref, watch, onMounted } from "vue";
 import TravelList from "../components/map/TravelList.vue";
-import { registerDetail } from "@/api/map"; 
+import { registerDetail } from "@/api/map";
 
 var map;
 var realData = ref([]);
@@ -13,34 +13,32 @@ const destination = ref([]); // 도착지
 
 const requestSend = () => {
   const dataToSend = {
-    markers: transformData(markers, '시작지'),
-    stopover: transformData(stopover, '경유지'),
-    destination: transformData(destination, '도착지'),
+    markers: transformData(markers, "시작지"),
+    stopover: transformData(stopover, "경유지"),
+    destination: transformData(destination, "도착지"),
   }; // api 스펙은 place_name, latitude, longitude, category로 설정됨.
 
+  // let data = new FormData();
+  // console.log(dataToSend.markers);
+  // // console.log(dataToSend.stopover);
+  // // console.log(dataToSend.destination);
+  // data.append('markers', dataToSend.markers);
+  // data.append('stopover', dataToSend.stopover);
+  // data.append('destination', dataToSend.destination);
 
-  let data = new FormData();
-  console.log(dataToSend.markers);
-  // console.log(dataToSend.stopover);
-  // console.log(dataToSend.destination);
-  data.append('markers', dataToSend.markers);
-  data.append('stopover', dataToSend.stopover);
-  data.append('destination', dataToSend.destination);
-  
   registerDetail(
-    data,
+    dataToSend,
     (successMsg) => {
       console.log(successMsg);
     },
     (error) => {
       console.log(error);
     }
-  )
-}
+  );
+};
 
 // 부모가 자식의 이벤트 처리에 대한 listen 처리
 const listenList = () => {
-
   // polyline이 그려져 있으면 값을 비운다.
   if (polyline) {
     polyline.setMap(null);
@@ -82,20 +80,20 @@ const listenList = () => {
 const transformData = (data, type) => {
   if (data.value.length === 1) {
     return {
-        place_name: data.value[0].place_name,
-        latitude: parseFloat(data.value[0].y),
-        longitude: parseFloat(data.value[0].x),
-        category : type,
-      };    
+      place_name: data.value[0].place_name,
+      latitude: parseFloat(data.value[0].y),
+      longitude: parseFloat(data.value[0].x),
+      category: type,
+    };
   } else {
-    return data.value.map(item => ({
+    return data.value.map((item) => ({
       place_name: item.place_name,
-        latitude: parseFloat(item.y),
-        longitude: parseFloat(item.x),
-        category : type,
-    }))
+      latitude: parseFloat(item.y),
+      longitude: parseFloat(item.x),
+      category: type,
+    }));
   }
-  }; // detailDto에 대한 수정이 필요
+}; // detailDto에 대한 수정이 필요
 
 const removeStopover = (stop) => {
   const index = stopover.value.indexOf(stop);
@@ -306,6 +304,6 @@ function displayMarker(place) {
   margin: 2px;
   width: 90px;
   justify-content: center;
-  float : right;
+  float: right;
 }
 </style>
