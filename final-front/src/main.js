@@ -1,5 +1,6 @@
 import "./assets/css/main.css";
 import { createApp } from "vue";
+import { createPinia } from "pinia";
 // import { createPinia } from 'pinia'
 // import { VueCookies } from "vue-cookies";
 
@@ -13,9 +14,10 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap";
 //Vue.use(VueCookies);
 const app = createApp(App);
-
+const pinia = createPinia();
 // app.use(createPinia())
 app.use(router);
 app.use(Antd);
 
+app.use(pinia);
 app.mount("#app");

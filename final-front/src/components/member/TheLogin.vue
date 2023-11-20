@@ -1,11 +1,13 @@
 <script setup>
 import { ref } from "vue";
 import { login } from "@/api/member";
+import { useAuthStore} from '../../stores/userStore';
 import { useRouter } from "vue-router";
 
 //const cookie = ref(this.$cookies.get("userId"));
 //console.log("쿠키왔나" + cookie);
-
+const authStore = useAuthStore();
+const {piniaUser,piniaLogin} = authStore;
 const router = useRouter();
 
 const loginUser = ref({
@@ -18,15 +20,17 @@ const onSubmit = () => {
   console.log("로그인 시도....");
   login(
     loginUser.value,
-    loginUser.userId,
+    loginUser.value.userId,
     (successMsg) => {
       console.log(successMsg);
-      console.log(successMsg.data.resdata);
-      localStorage.setItem("userinfo", JSON.stringify(successMsg.data.resdata));
-      //console.log(JSON.parse(localStorage.getItem("userinfo")).userId);
+      console.log("resdata : " + successMsg.data.resdata.userId);
+      piniaLogin(successMsg.data.resdata);
+      // localStorage.setItem("userinfo", JSON.stringify(successMsg.data.resdata));
+      // console.log(JSON.parse(localStorage.getItem("userinfo")).userId);
     },
     (error) => {
       console.log(error);
+      console.log("로그인실패!!");
     }
   );
 

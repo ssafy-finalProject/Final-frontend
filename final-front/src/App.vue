@@ -6,16 +6,17 @@ import TheLogin from "./components/member/TheLogin.vue";
 import KakaoMap from "./views/KakaoMap.vue";
 import TheBoardWrite from "./components/board/TheBoardWrite.vue";
 import TheBoardView from "./components/board/TheBoardView.vue";
+import TheFeedWrite from "./components/board/TheFeedWrite.vue";
+import TheFeedView from "./components/board/TheFeedView.vue";
+import TheFeedMyList from "./components/board/TheFeedMyList.vue";
 </script>
 
 <template>
   <div>
     <TheHeader></TheHeader>
     <KakaoMap></KakaoMap>
-    <!-- <TheTmap></TheTmap> -->
-    <!-- <InstagramFeed /> -->
     <!-- <TheBoardView/> -->
-    <!-- <TheBoardWrite/> -->
+    <!-- <TheBoardWrite /> -->
     <!-- <TheMap></TheMap> -->
     <!-- <KakaoMap></KakaoMap> -->
     <!-- <router-view></router-view> -->
