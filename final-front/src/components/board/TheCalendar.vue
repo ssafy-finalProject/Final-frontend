@@ -1,113 +1,125 @@
 <script setup>
-function prevMonth(date) {
-    var target = new Date(date);
-    target.setDate(1);
-    target.setMonth(target.getMonth() - 1);
+import { ref, onMounted } from "vue";
+const currentDate = ref(new Date());
+const currentMonthYear = ref("");
+const calendar = ref([]);
 
-    return getYmd(target);
-}
+const generateCalendar = function (year, month) {
+  const firstDay = new Date(year, month, 1);
+  const startingDay = firstDay.getDay();
 
-function nextMonth(date) {
-    var target = new Date(date);
-    target.setDate(1);
-    target.setMonth(target.getMonth() + 1);
+  const lastDay = new Date(year, month + 1, 0);
+  const totalDays = lastDay.getDate();
 
-    return getYmd(target);
-}
+  const lastMonthLastDay = new Date(year, month, 0);
+  const lastMonthTotalDays = lastMonthLastDay.getDate();
 
-function getYmd(target) {
-    // IE에서 날짜 문자열에 0이 없으면 인식 못함
-    var month = ('0' + (target.getMonth() + 1)).slice(-2);
-    return [target.getFullYear(), month, '01'].join('-');
-}
+  let dayCount = 1;
+  let calendarData = [];
 
-function fullDays(date) {
-    var target = new Date(date);
-    var year = target.getFullYear();
-    var month = target.getMonth();
+  for (let i = 0; i < 6; i++) {
+    let week = [];
 
-    var firstWeekDay = new Date(year, month, 1).getDay();
-    var thisDays = new Date(year, month + 1, 0).getDate();
-
-    // 월 표시 달력이 가지는 셀 갯수는 3가지 가운데 하나이다.
-    // var cell = [28, 35, 42].filter(n => n >= (firstWeekDay + thisDays)).shift();
-    var cell = [28, 35, 42].filter(function (n) {
-            return n >= (firstWeekDay + thisDays);
-        }).shift();
-
-    // 셀 초기화, IE에서 Array.fill()을 지원하지 않아서 변경
-    // var days = new Array(cell).fill({date: '', dayNum: '', today: false});
-    var days = []
-    for (var i = 0; i < cell; i++) {
-        days[i] = {
-            date: '',
-            dayNum: '',
-            today: false
-        };
-    }
-    
-    var now = new Date();
-    var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    var inDate;
-    for (var index = firstWeekDay, i = 1; i <= thisDays; index++, i++) {
-        inDate = new Date(year, month, i);
-        days[index] = {
-            date: i,
-            dayNum: inDate.getDay(),
-            today: (inDate.getTime() === today.getTime())
-        };
+    for (let j = 0; j < 7; j++) {
+      if (i === 0 && j < startingDay) {
+        week.push({ day: "", inactive: true });
+      } else if (dayCount <= totalDays) {
+        week.push({ day: dayCount, inactive: false });
+        dayCount++;
+      } else {
+        week.push({ day: "", inactive: true });
+      }
     }
 
-    return days;
-}
+    calendarData.push(week);
+  }
+
+  currentMonthYear.value = `${year}년 ${month + 1}월`;
+  calendar.value = calendarData;
+};
+
+const previousMonth = function () {
+  currentDate.value.setMonth(currentDate.value.getMonth() - 1);
+  updateCalendar();
+};
+
+const nextMonth = function () {
+  currentDate.value.setMonth(currentDate.value.getMonth() + 1);
+  updateCalendar();
+};
+
+const updateCalendar = function () {
+  const year = currentDate.value.getFullYear();
+  const month = currentDate.value.getMonth();
+  generateCalendar(year, month);
+};
+
+onMounted(() => {
+  updateCalendar();
+});
 </script>
 
 <template>
-    <div class="date-wrap">
-            <div class="date-month">
-                <span id="month-this">2022.05</span>
-                <div class="button_wrap">
-                    <button type="button" id="month-prev" class="month-move" data-ym="2022-04-01"> + </button>
-                    <button type="button" id="month-next" class="month-move" data-ym="2022-06-01"> - </button>
-                </div>
-            </div>
-            <table class="date-month">
-                <thead>
-                    <tr>
-                        <th>일</th>
-                        <th>월</th>
-                        <th>화</th>
-                        <th>수</th>
-                        <th>목</th>
-                        <th>금</th>
-                        <th>토</th>
-                    </tr>
-                </thead>
-                <tbody id="tbl-month">
-                    <tr>
-                        <td class="sun"><a>1</a></td>
-                        <td class=""><a>2</a></td>
-                        <td class=""><a>3</a></td>
-                        <td class=""><a>4</a></td>
-                        <td class="today"><a>5</a></td>
-                        <td class=""><a>6</a></td>
-                        <td class="sat"><a>7</a></td>
-                    </tr>
-                    <!-- 행 반복 -->
-                    <tr>
-                        <td class="sun"><a>29</a></td>
-                        <td class=""><a>30</a></td>
-                        <td class=""><a>31</a></td>
-                        <td class=""><a></a></td>
-                        <td class=""><a></a></td>
-                        <td class=""><a></a></td>
-                        <td class="sat"><a></a></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+  <div>
+    <div class="month-navigation">
+      <button @click="previousMonth">이전 달</button>
+      <h2>{{ currentMonthYear }}</h2>
+      <button @click="nextMonth">다음 달</button>
+    </div>
+
+    <table id="calendar">
+      <thead>
+        <tr>
+          <th>일</th>
+          <th>월</th>
+          <th>화</th>
+          <th>수</th>
+          <th>목</th>
+          <th>금</th>
+          <th>토</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(week, index) in calendar" :key="index">
+          <td v-for="(day, dayIndex) in week" :key="dayIndex" :class="{ inactive: day.inactive }">
+            {{ day.day !== "" ? day.day : "" }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </template>
 
 <style scoped>
+body {
+  font-family: Arial, sans-serif;
+}
 
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+th,
+td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+
+th {
+  background-color: #f2f2f2;
+}
+
+.month-navigation {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.month-navigation button {
+  padding: 5px 10px;
+  cursor: pointer;
+}
 </style>
