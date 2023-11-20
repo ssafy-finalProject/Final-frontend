@@ -4,6 +4,10 @@ import TheLogin from "@/components/member/TheLogin.vue";
 import TheFindPassWord from "@/components/member/TheFindPassWord.vue";
 import TheJoin from "@/components/member/TheJoin.vue";
 import TheMyPage from "@/components/member/TheMyPage.vue";
+import TheFeedMyList from "@/components/board/TheFeedMyList.vue";
+import TheMyFeedView from "@/views/TheMyFeedView.vue";
+import TheFeedView from "@/components/board/TheFeedView.vue";
+import TheFeedWrite from "@/components/board/TheFeedWrite.vue";
 // import TheBoardView from "@/components/board/TheBoardView.vue";
 // import TheBoardWrite from "@/components/board/TheBoardWrite.vue";
 // import TheBoardModify from "@/components/board/TheBoardModify.vue";
@@ -48,34 +52,37 @@ const router = createRouter({
       component: TheMyPage,
     },
     {
-      path: "/board",
-      name: "board",
-      component: () => import("../views/TheBoardView.vue"),
-      redirect: { name: "boardlist" },
+      path: "/myfeed",
+      name: "myfeed",
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      redirect: {name : "myfeedlist"},
+      component: TheMyFeedView,
       children: [
         {
-          path: "list",
-          name: "boardlist",
-          component: () => import("../components/board/BoardList.vue"),
+          path: "myfeedlist",
+          name : "myfeedlist",
+          component : TheFeedMyList,
         },
         {
-          path: "write",
-          name: "boardwrite",
-          component: () => import("../components/board/TheBoardWrite.vue"),
+          path: "myfeedview/:no",
+          name: "myfeedview",
+          component: TheFeedView,
         },
         {
-          path: "view/:no",
-          name: "boardview",
-          component: () => import("../components/board/TheBoardView.vue"),
+          path: "/myfeedwrite",
+          name: "myfeedwrite",
+          component: TheFeedWrite,
         },
-        {
-          path: "modify/:no",
-          name: "boardmodify",
-          component: () => import("../components/board/TheBoardModify.vue"),
-        },
-      ],
+        // {
+        //   path: "myfeedmodify/:no",
+        //   name: "myfeedmodify",
+        //   component: ,
+        // },
+
+      ]
     },
-    {},
   ],
 });
 

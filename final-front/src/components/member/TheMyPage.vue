@@ -2,7 +2,9 @@
 import { ref,onMounted } from "vue";
 import { modifyMember,getMember,deleteMember } from "@/api/member";
 import { useRouter } from "vue-router";
-
+import { useAuthStore} from '../../stores/userStore';
+const authStore = useAuthStore();
+const {piniaUser} = authStore;
 const router = useRouter();
 const loginUser = ref({
   userId: "",
@@ -12,8 +14,7 @@ const loginUser = ref({
 
 
 onMounted(()=>{
-  let tmp = (JSON.parse(localStorage.getItem("userinfo")).userId)
-  getMember(tmp,
+  getMember(piniaUser.userId,
   (successMsg) => {
       let tmp2 = JSON.stringify(successMsg.data);
       console.log(tmp2);
@@ -126,7 +127,7 @@ const deleteMem = ()=>{
           <div id="msg2"></div>
           <div id="result-view" class="mb-3"></div>
           <div class="col-auto text-center">
-            <button type="submit" id="btn-modify" class="btn btn-outline-primary mb-3">정보수정</button>
+            <button type="submit" id="btn-modify" class="btn btn-outline-primary mb-3" :disabled="canSubmit">정보수정</button>
             <button type ="button" id="btn-delete" class="btn btn-outline-primary mb-3" @click="deleteMem">회원탈퇴</button>
           </div>
         </form>
