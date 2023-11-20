@@ -2,9 +2,9 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { writeArticle } from "@/api/board";
-import { useAuthStore} from '../../stores/userStore';
+import { useAuthStore } from "../../stores/userStore";
 const authStore = useAuthStore();
-const {piniaUser} = authStore;
+const { piniaUser } = authStore;
 const router = useRouter();
 const feedArticle = ref({
   user_id: piniaUser.userId,
@@ -57,7 +57,7 @@ const onSubmit = () => {
       console.log(fail);
     }
   );
-  router.push("list");
+  router.push("myfeed");
 };
 </script>
 <template>
