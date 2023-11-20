@@ -14,12 +14,13 @@ import TheFeedMyList from "./components/board/TheFeedMyList.vue";
 <template>
   <div>
     <TheHeader></TheHeader>
-    <KakaoMap></KakaoMap>
+    <!-- <KakaoMap></KakaoMap> -->
     <!-- <TheBoardView/> -->
     <!-- <TheBoardWrite /> -->
+    <!-- <TheFeedWrite></TheFeedWrite> -->
     <!-- <TheMap></TheMap> -->
     <!-- <KakaoMap></KakaoMap> -->
-    <!-- <router-view></router-view> -->
+    <router-view></router-view>
     <!-- <TheFooter></TheFooter> -->
   </div>
 </template>
