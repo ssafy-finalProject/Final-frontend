@@ -9,18 +9,20 @@ import TheBoardView from "./components/board/TheBoardView.vue";
 import TheFeedWrite from "./components/board/TheFeedWrite.vue";
 import TheFeedView from "./components/board/TheFeedView.vue";
 import TheFeedMyList from "./components/board/TheFeedMyList.vue";
+import TheWholeList from "./views/TheWholeList.vue";
 </script>
 
 <template>
   <div>
     <TheHeader></TheHeader>
+    <TheWholeList></TheWholeList>
     <!-- <KakaoMap></KakaoMap> -->
     <!-- <TheBoardView/> -->
     <!-- <TheBoardWrite /> -->
     <!-- <TheFeedWrite></TheFeedWrite> -->
     <!-- <TheMap></TheMap> -->
     <!-- <KakaoMap></KakaoMap> -->
-    <router-view></router-view>
+    <!-- <router-view></router-view> -->
     <!-- <TheFooter></TheFooter> -->
   </div>
 </template>
