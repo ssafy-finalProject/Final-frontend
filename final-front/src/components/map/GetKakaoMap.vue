@@ -1,23 +1,35 @@
 <script setup>
-import { ref, watch, onMounted } from "vue";
-import { listDetail } from "@/api/map";
+import { ref, watch, onMounted, watchEffect } from "vue";
 
 var map;
-var realData = ref([]);
-const articleNo = 4;
+var ps;
+var infowindow;
+
+const articleNo = 1;
 let polyline;
 const markerPins = ref([]);
 const locationData = ref([]);
-const markers = ref([]); // 시작지
-const stopover = ref([]); // 경유지
-const destination = ref([]); // 도착지
+const { markers, stopover, destination, flag } = defineProps({
+  markers: Array,
+  stopover: Array,
+  destination: Array,
+  flag : Number,
+})
 
-var ps;
-var infowindow;
+watch(
+    () => flag,
+    (newVal) => {
+      console.log(flag);
+  }
+)
+
+
+
 
 onMounted(() => {
   if (window.kakao && window.kakao.maps) {
     initMap();
+    console.log(markers);
   } else {
     const script = document.createElement("script");
     script.src = `//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=${
@@ -34,124 +46,103 @@ onMounted(() => {
 
 const initMap = () => {
   const container = document.getElementById("map");
-
-  listDetail(
-    articleNo,
-    ({ data }) => {
-      console.log(data);
-      // console.log(data[0].category);
-      const options = {
+  // console.log(data[0].category);
+  const options = {
         center: new kakao.maps.LatLng(37.500613, 127.036431),
         level: 5,
       };
       map = new kakao.maps.Map(container, options);
       ps = new kakao.maps.services.Places();
       infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
-
-      for (let i = 0; i < data.length; i++) {
-        const markerData = { ...data[i] };
-        locationData.value.push(markerData);
-
-        if (data[i].category === "시작지") {
-          console.log("시작지");
-          markers.value = { ...data[i] };
-        } else if (data[i].category === "경유지") {
-          console.log("경유지");
-          stopover.value.push({ ...data[i] });
-        } else if (data[i].category === "도착지") {
-          console.log("도착지");
-          destination.value = { ...data[i] };
-        }
-      }
-      console.log("markers = ", markers.value);
-      console.log("stopover = ", stopover.value);
-      console.log("destination = ", destination.value);
-      displayRoute();
-    },
-    (fail) => {
-      console.log(fail);
-    }
-  ); // article_no 가 1번일 때, 지도의 좌표 값 출력
+      
+  //     watchEffect(() => {
+  //       try {
+  //         console.log(markers.value);
+  //         // displayRoute();
+  //       } catch (error) {
+  //        console.error(error);
+  //       }
+  // });
+      // displayRoute();
+  // article_no 가 1번일 때, 지도의 좌표 값 출력
   // markers , stopover, destination 에 값
-
-  ps = new kakao.maps.services.Places();
-  infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
   console.log("입력");
 };
 
-const displayRoute = () => {
-  if (polyline) {
-    polyline.setMap(null);
-  }
 
-  const linePath = [];
+// const displayRoute = () => {
+//   if (polyline) {
+//     polyline.setMap(null);
+//   }
 
-  // console.log(markers.value);
-  // 마커 표시
-  const markerOptions = {
-    map: map,
-    position: new kakao.maps.LatLng(
-      markers.value.latitude,
-      markers.value.longitude
-    ),
-  };
-  const marker = new kakao.maps.Marker(markerOptions);
-  markerPins.value.push(marker);
+//   const linePath = [];
 
-  linePath.push(
-    new kakao.maps.LatLng(markers.value.latitude, markers.value.longitude)
-  );
+//   console.log(markers);
+//   // 마커 표시
+//   const markerOptions = {
+//     map: map,
+//     position: new kakao.maps.LatLng(
+//       markers.value.latitude,
+//       markers.value.longitude
+//     ),
+//   };
+//   const marker = new kakao.maps.Marker(markerOptions);
+//   markerPins.value.push(marker);
 
-  for (let i = 0; i < stopover.value.length; i++) {
-    const stopoverOptions = {
-      map: map,
-      position: new kakao.maps.LatLng(
-        stopover.value[i].latitude,
-        stopover.value[i].longitude
-      ),
-    };
-    let stopoverMarker = new kakao.maps.Marker(stopoverOptions);
-    markerPins.value.push(stopoverMarker);
+//   linePath.push(
+//     new kakao.maps.LatLng(markers.value.latitude, markers.value.longitude)
+//   );
 
-    linePath.push(
-      new kakao.maps.LatLng(
-        stopover.value[i].latitude,
-        stopover.value[i].longitude
-      )
-    );
-  }
+//   for (let i = 0; i < stopover.value.length; i++) {
+//     const stopoverOptions = {
+//       map: map,
+//       position: new kakao.maps.LatLng(
+//         stopover.value[i].latitude,
+//         stopover.value[i].longitude
+//       ),
+//     };
+//     let stopoverMarker = new kakao.maps.Marker(stopoverOptions);
+//     markerPins.value.push(stopoverMarker);
 
-  const destinationOptions = {
-    map: map,
-    position: new kakao.maps.LatLng(
-      destination.value.latitude,
-      destination.value.longitude
-    ),
-  };
-  const destinationMarker = new kakao.maps.Marker(destinationOptions);
-  markerPins.value.push(destinationMarker);
+//     linePath.push(
+//       new kakao.maps.LatLng(
+//         stopover.value[i].latitude,
+//         stopover.value[i].longitude
+//       )
+//     );
+//   }
 
-  linePath.push(
-    new kakao.maps.LatLng(
-      destination.value.latitude,
-      destination.value.longitude
-    )
-  );
+//   const destinationOptions = {
+//     map: map,
+//     position: new kakao.maps.LatLng(
+//       destination.value.latitude,
+//       destination.value.longitude
+//     ),
+//   };
+//   const destinationMarker = new kakao.maps.Marker(destinationOptions);
+//   markerPins.value.push(destinationMarker);
 
-  // 마커와 선 표시
-  polyline = new kakao.maps.Polyline({
-    path: linePath,
-    strokeWeight: 5,
-    strokeColor: "#FFAE00",
-    strokeOpacity: 0.7,
-    strokeStyle: "solid",
-  });
+//   linePath.push(
+//     new kakao.maps.LatLng(
+//       destination.value.latitude,
+//       destination.value.longitude
+//     )
+//   );
 
-  polyline.setMap(map);
-  mapInit();
-};
+//   // 마커와 선 표시
+//   polyline = new kakao.maps.Polyline({
+//     path: linePath,
+//     strokeWeight: 5,
+//     strokeColor: "#FFAE00",
+//     strokeOpacity: 0.7,
+//     strokeStyle: "solid",
+//   });
 
-function mapInit() {
+//   polyline.setMap(map);
+//   mapInit();
+// };
+
+const mapInit = () => {
   console.log(locationData.value[0].latitude);
   console.log(locationData.value.length);
   var bounds = new kakao.maps.LatLngBounds();

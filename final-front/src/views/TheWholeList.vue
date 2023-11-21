@@ -7,10 +7,11 @@ const openedPanelKeys = ref([]);
 const articles = ref([]);
 
 const allInforms = ref([]);
+const flag = ref(0);
 
-let markers = ref([]); // 시작지
-let stopover = ref([]); // 경유지
-let destination = ref([]); // 도착지
+var markers = ref([]); // 시작지
+var stopover = ref([]); // 경유지
+var destination = ref([]); // 도착지
 
 const boardArticle = ref({
   user_id: "",
@@ -36,7 +37,7 @@ const getArticleList = () => {
     ({ data }) => {
       //console.log(data);
       articles.value = data.articles;
-      //console.log(articles.value);
+      // console.log(articles.value);
     },
     (fail) => {
       console.log(fail);
@@ -73,19 +74,29 @@ const handlePanelOpen = (openedPanelKey) => {
   //console.log("실행중");
   //collape 누르는 순간 정보 얻어와야된다.
 
+  markers.value = [];
+  stopover.value = [];
+  destination.value = [];
+  flag.value = (Number)(new Date().getMilliseconds());
+
   getDetails(
     openedPanelKey,
     ({ data }) => {
       //console.log(data);
       for (let i = 0; i < data.length; i++) {
         if (data[i].category === "시작지") {
-          markers.value = { ...data[i] };
+          // markers.value = { ...data[i] };
+          markers.value.push(data[i]);
         } else if (data[i].category === "경유지") {
-          stopover.value = { ...data[i] };
+          // stopover.value = { ...data[i] };
+          stopover.value.push(data[i]);
         } else if (data[i].category === "도착지") {
-          destination.value = { ...data[i] };
+          // destination.value = { ...data[i] };
+          destination.value.push(data[i]);
         }
       }
+      flag.value = (Number)(new Date().getMilliseconds());
+
       console.log(markers.value);
       console.log(stopover.value);
       console.log(destination.value);
@@ -124,9 +135,10 @@ const handlePanelOpen = (openedPanelKey) => {
 </script>
 
 <template>
-  <div style="display: flex">
-    <GetKakaoMap></GetKakaoMap>
-    <div id="container">
+  <div class="container mt-5" style="display: flex">
+    <GetKakaoMap :markers="markers" :stopover="stopover" :destination="destination" :flag="flag">
+    </GetKakaoMap>
+    <div id="container" >
       <div class="input-group input-group-sm">
         <input
           type="text"
@@ -139,7 +151,7 @@ const handlePanelOpen = (openedPanelKey) => {
         </button>
       </div>
 
-      <a-collapse @change="handleCollapseChange">
+      <a-collapse class="mt-3" @change="handleCollapseChange">
         <a-collapse-panel
           accordion
           v-for="article in articles"
