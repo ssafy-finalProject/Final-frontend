@@ -5,7 +5,9 @@ import { listDetail } from "@/api/map";
 
 var map;
 var realData = ref([]);
+const articleNo = 1;
 let polyline;
+const coordinate = ref([]); // 좌표 값 찾기
 const markers = ref([]); // 시작지
 const stopover = ref([]); // 경유지
 const destination = ref([]); // 도착지
@@ -68,13 +70,6 @@ const transformData = (data, type) => {
   }
 }; // detailDto에 대한 수정이 필요
 
-const removeStopover = (stop) => {
-  const index = stopover.value.indexOf(stop);
-  if (index !== -1) {
-    stopover.value.splice(index, 1);
-  }
-};
-
 var ps;
 var infowindow;
 
@@ -95,6 +90,22 @@ onMounted(() => {
 const initMap = () => {
   const container = document.getElementById("map");
 
+  listDetail(
+    1,
+    ({ data }) => {
+      console.log(data);
+      markers.value = data.markers;
+      stopover.value = data.stopover;
+      destination.value = data.destination;
+      console.log("markers = " + markers.value);
+      console.log("stopover = " + stopover.value);
+      console.log("destination = " + destination.value);
+    },
+    (fail) => {
+      console.log(fail);
+    }
+  ) // article_no 가 1번일 때, 지도의 좌표 값 출력
+    // markers , stopover, destination 에 값  
   const options = {
     center: new kakao.maps.LatLng(37.500613, 127.036431),
     level: 5,
@@ -202,17 +213,17 @@ function displayMarker(place) {
   <div class="container">
     <div class="container-fluid row">
       <div id="map" class="col-8"></div>
-      <TravelList
+      <!-- <TravelList
         :markers="markers"
         :stopover="stopover"
         :destination="destination"
         class="col-4"
         @send-list="listenList"
         @remove-stopover="removeStopover"
-      />
+      /> -->
       <!--자식에서 부모에게 send-list라는 이벤트를 발생했는데, 그걸 listen을 통해서 듣고 잇다가, 발생하면 이제 함수 처리한다.-->
     </div>
-    <button id="determine" @click="requestSend">최종 결정</button>
+    <!-- <button id="determine" @click="requestSend">최종 결정</button> -->
     <!-- 최종 결정을 눌렀을 때에, 현재의 시작지, 경유지, 도착지를 기준으로 post로 서버에 보내준다.-->
   </div>
 </template>
