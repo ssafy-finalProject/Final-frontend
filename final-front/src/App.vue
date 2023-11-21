@@ -9,11 +9,13 @@ import TheBoardView from "./components/board/TheBoardView.vue";
 import TheFeedWrite from "./components/board/TheFeedWrite.vue";
 import TheFeedView from "./components/board/TheFeedView.vue";
 import TheFeedMyList from "./components/board/TheFeedMyList.vue";
+import GetKakaoMap from "./components/map/GetKakaoMap.vue";
 </script>
 
 <template>
   <div>
     <TheHeader></TheHeader>
+    <GetKakaoMap />
     <!-- <KakaoMap></KakaoMap> -->
     <!-- <TheBoardView/> -->
     <!-- <TheBoardWrite /> -->
