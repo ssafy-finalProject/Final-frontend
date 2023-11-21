@@ -16,6 +16,7 @@ import TheWholeList from "./views/TheWholeList.vue";
 <template>
   <div>
     <TheHeader></TheHeader>
+    <router-view></router-view>
     <TheWholeList></TheWholeList>
     <!-- <GetKakaoMap /> -->
     <!-- <KakaoMap></KakaoMap> -->
@@ -24,7 +25,6 @@ import TheWholeList from "./views/TheWholeList.vue";
     <!-- <TheFeedWrite></TheFeedWrite> -->
     <!-- <TheMap></TheMap> -->
     <!-- <KakaoMap></KakaoMap> -->
-    <router-view></router-view>
     <!-- <TheFooter></TheFooter> -->
   </div>
 </template>

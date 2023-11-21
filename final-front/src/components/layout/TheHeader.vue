@@ -1,8 +1,8 @@
 <script setup>
 import { ref, onMounted } from "vue";
-import { useAuthStore} from '../../stores/userStore';
+import { useAuthStore } from "../../stores/userStore";
 const authStore = useAuthStore();
-const {piniaUser,piniaLogout} = authStore;
+const { piniaUser, piniaLogout } = authStore;
 
 onMounted(() => {
   //console.log("현재 로그인 정보는" + piniaUser.value.userId);
@@ -14,10 +14,15 @@ onMounted(() => {
     <div class="container">
       <a class="navbar-brand">
         <router-link :to="{ name: 'main' }">
-          <img src="@/assets/img/logo2.png" alt="" />
+          <img src="@/assets/img/main_logo.png" alt="" />
         </router-link>
       </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#collapsibleNavbar"
+      >
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="collapsibleNavbar">
@@ -51,7 +56,9 @@ onMounted(() => {
         <!-- <c:otherwise> -->
         <ul v-else class="navbar-nav">
           <li class="nav-item">
-            <a class="nav-link disabled">{{ piniaUser.userId }}님 반갑습니다.</a>
+            <a class="nav-link disabled"
+              >{{ piniaUser.userId }}님 반갑습니다.</a
+            >
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#" @click="piniaLogout">로그아웃</a>
@@ -63,8 +70,8 @@ onMounted(() => {
           </li>
           <li class="nav-item">
             <router-link to="/myfeed" class="text-decoration-none">
-              <a class="nav-link" >나의 게시글</a>
-          </router-link>
+              <a class="nav-link">나의 게시글</a>
+            </router-link>
             <!-- <ul class="dropdown-menu">
               <li><a class="dropdown-item" href="#">회원 관리</a></li>
               <li><a class="dropdown-item" href="#">게시물 관리</a></li>
