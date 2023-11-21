@@ -16,7 +16,7 @@ import TheWholeList from "./views/TheWholeList.vue";
 <template>
   <div>
     <TheHeader></TheHeader>
-    <TheWholeList></TheWholeList>
+    <!-- <TheWholeList></TheWholeList  heWholeList> -->
     <!-- <GetKakaoMap /> -->
     <!-- <KakaoMap></KakaoMap> -->
     <!-- <TheBoardView/> -->
