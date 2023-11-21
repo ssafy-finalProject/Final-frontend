@@ -17,7 +17,7 @@ import TheCalendar from "./components/board/TheCalendar.vue";
 <template>
   <div>
     <TheHeader></TheHeader>
-    <TheCalendar></TheCalendar>
+    <!-- <TheCalendar></TheCalendar> -->
     <!-- <TheWholeList></TheWholeList> -->
     <!-- <GetKakaoMap /> -->
     <!-- <KakaoMap></KakaoMap> -->
@@ -26,7 +26,7 @@ import TheCalendar from "./components/board/TheCalendar.vue";
     <!-- <TheFeedWrite></TheFeedWrite> -->
     <!-- <TheMap></TheMap> -->
     <!-- <KakaoMap></KakaoMap> -->
-    <!-- <router-view></router-view> -->
+    <router-view></router-view>
     <!-- <TheFooter></TheFooter> -->
   </div>
 </template>

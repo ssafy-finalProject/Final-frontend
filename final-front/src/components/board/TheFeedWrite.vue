@@ -12,6 +12,9 @@ const markers = ref([]); // 시작지
 const stopover = ref([]); // 경유지
 const destination = ref([]); // 도착지
 
+//메모를 한번에 담아서 보낼 변수
+const sendCalInform = ref([]);
+
 const authStore = useAuthStore();
 const { piniaUser } = authStore;
 const router = useRouter();
@@ -49,8 +52,7 @@ const onSubmit = () => {
   Imagefiles.value.forEach((ele) => {
     console.log("넘길 파일 " + ele);
   });
-  console.log();
-
+  
   const dataToSend = ref({
     markers: transformData(markers, "시작지"),
     stopover: transformData(stopover, "경유지"),
@@ -58,6 +60,7 @@ const onSubmit = () => {
   });
   //무조건 글과 내용이 들어간 후에 사진업로드가 실행 되어야함
   let data = new FormData();
+  console.log("넘길 메모자료"+sendCalInform.value);
   data.append("user_id", feedArticle.value.user_id);
   data.append("subject", feedArticle.value.subject);
   data.append("content", feedArticle.value.content);
@@ -65,7 +68,7 @@ const onSubmit = () => {
     data.append("files", ele);
   });
   data.append("dataToSend", JSON.stringify(dataToSend.value));
-
+  data.append("sendCalInform", JSON.stringify(sendCalInform.value));
   writeArticle(
     data,
     (success) => {
@@ -75,7 +78,7 @@ const onSubmit = () => {
       console.log(fail);
     }
   );
-  router.push("myfeed");
+  // router.push("myfeed");
 };
 
 const requestSend = () => {
@@ -292,6 +295,127 @@ function displayMarker(place) {
     }
   };
 }
+
+
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////
+
+
+const currentDate = ref(new Date());
+const currentMonthYear = ref("");
+const calendar = ref([]);
+const selectedDate = ref(null);
+const memo = ref("");
+
+
+
+const realMonth = ref();
+const realDay = ref();
+const realYear = ref();
+
+const generateCalendar = function (year, month) {
+  const firstDay = new Date(year, month, 1);
+  const startingDay = firstDay.getDay();
+
+  const lastDay = new Date(year, month + 1, 0);
+  const totalDays = lastDay.getDate();
+
+  const lastMonthLastDay = new Date(year, month, 0);
+  const lastMonthTotalDays = lastMonthLastDay.getDate();
+
+  selectedDate.value = ref(null);
+  memo.value = "";
+
+  let dayCount = 1;
+  let calendarData = [];
+
+  for (let i = 0; i < 6; i++) {
+    let week = [];
+
+    for (let j = 0; j < 7; j++) {
+      if (i === 0 && j < startingDay) {
+        week.push({ day: "", inactive: true });
+      } else if (dayCount <= totalDays) {
+        week.push({ day: dayCount, inactive: false });
+        dayCount++;
+      } else {
+        week.push({ day: "", inactive: true });
+      }
+    }
+
+    calendarData.push(week);
+  }
+
+  currentMonthYear.value = `${year}년 ${month + 1}월`;
+  calendar.value = calendarData;
+  realYear.value = year;
+  realMonth.value = month + 1;
+};
+
+const previousMonth = function () {
+  currentDate.value.setMonth(currentDate.value.getMonth() - 1);
+  updateCalendar();
+};
+
+const nextMonth = function () {
+  currentDate.value.setMonth(currentDate.value.getMonth() + 1);
+  updateCalendar();
+};
+
+const updateCalendar = function () {
+  const year = currentDate.value.getFullYear();
+  const month = currentDate.value.getMonth();
+  generateCalendar(year, month);
+};
+
+onMounted(() => {
+  updateCalendar();
+});
+
+const showModal = ref(false);
+
+//날짜 고를때
+const handleDateClick = function (day) {
+  console.log("클릭이벤트!! 클릭날짜: " + day);
+  selectedDate.value = day;
+  realDay.value = selectedDate.value;
+  showModal.value = true;
+};
+
+const closeAndSaveMemo = function () {
+  // 모달에서 메모 저장 등의 작업 수행
+  // 추가했을때 보낼 데이터들 중의 현재 접근한 날짜를 id로 가진 녀석의 메모 내용을 바꿔서 새로 저장한다.
+  // for(let i=0;i<sendCalInform.value.length;i++){
+  //   if(sendCalInform.value[i].)
+  // }
+  console.log("지금 찾아야될 day : "+ realDay.value);
+  console.log("sendCal의 정보는 : "+ JSON.stringify(sendCalInform.value));
+  let foundObject = sendCalInform.value.find(item => item.day===realDay.value&& item.month===realMonth.value);
+  //해당 id를 가진 객체가 존재한다면
+  if(foundObject){
+    console.log("찾은객체의 day : "+foundObject.day+"현재 날짜의 id"+realDay.value);
+    console.log("날짜 메모가 존재하는 녀석이였고 그녀석의 정보는 : "+JSON.stringify(foundObject));
+    foundObject.memoContent = memo.value;
+    console.log("날짜 메모가 존재하는 녀석이였고 그녀석의 바뀐 정보는 : "+JSON.stringify(foundObject));
+  }
+  //없으면 새로 넣어서 저장
+  else{
+    sendCalInform.value.push({year:realYear,month:realMonth.value,day:realDay.value,memoContent:memo.value});
+    console.log("날짜 메모가 없는 녀석이여서 새로저장, 현재 sendcalInform은"+JSON.stringify(sendCalInform.value));
+  }
+
+  console.log(`메모 추가: ${realDay.value} - ${memo.value}`);
+
+  // 모달 닫기
+  showModal.value = false;
+
+  // 메모 입력 필드 초기화
+  memo.value = "";
+};
+
 </script>
 <template>
   <div class="container">
@@ -310,10 +434,53 @@ function displayMarker(place) {
         @remove-stopover="removeStopover" />
       <!--자식에서 부모에게 send-list라는 이벤트를 발생했는데, 그걸 listen을 통해서 듣고 잇다가, 발생하면 이제 함수 처리한다.-->
     </div>
-    <button id="determine" @click="requestSend">최종 결정</button>
+    <!-- <button id="determine" @click="requestSend">최종 결정</button> -->
     <!-- 최종 결정을 눌렀을 때에, 현재의 시작지, 경유지, 도착지를 기준으로 post로 서버에 보내준다.-->
   </div>
+  <!--  -->
+  <!--  -->
+    <!--  -->
+    <div>
+    <div class="month-navigation">
+      <button @click="previousMonth">이전 달</button>
+      <h2>{{ currentMonthYear }}</h2>
+      <button @click="nextMonth">다음 달</button>
+    </div>
 
+    <table id="calendar">
+      <thead>
+        <tr>
+          <th>일</th>
+          <th>월</th>
+          <th>화</th>
+          <th>수</th>
+          <th>목</th>
+          <th>금</th>
+          <th>토</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(week, index) in calendar" :key="index">
+          <td
+            v-for="(day, dayIndex) in week"
+            :key="dayIndex"
+            :class="{ inactive: day.inactive }"
+            @click="handleDateClick(day.day)">
+            {{ day.day !== "" ? day.day : "" }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div v-if="showModal">
+      <div class="modal-content">
+        <span class="close" @click="showModal = false">&times;</span>
+        <p>{{ realMonth }}월 {{ realDay }}일의 메모</p>
+        <textarea v-model="memo"></textarea>
+        <button @click="closeAndSaveMemo">저장</button>
+      </div>
+    </div>
+  </div>
+<!--  -->
   <div class="rightPage">
     <form class="upload-form" @submit.prevent="onSubmit">
       <div class="upload-container">
@@ -345,6 +512,8 @@ function displayMarker(place) {
       </div>
     </form>
   </div>
+
+
 </template>
 
 <style scoped>
@@ -435,4 +604,74 @@ button#upload {
   justify-content: center;
   float: right;
 }
+
+/* 
+ */
+ body {
+  font-family: Arial, sans-serif;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+th,
+td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+
+th {
+  background-color: #f2f2f2;
+}
+
+.month-navigation {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.month-navigation button {
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+
 </style>
