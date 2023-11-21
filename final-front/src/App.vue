@@ -10,12 +10,14 @@ import TheFeedWrite from "./components/board/TheFeedWrite.vue";
 import TheFeedView from "./components/board/TheFeedView.vue";
 import TheFeedMyList from "./components/board/TheFeedMyList.vue";
 import GetKakaoMap from "./components/map/GetKakaoMap.vue";
+import TheWholeList from "./views/TheWholeList.vue";
 </script>
 
 <template>
   <div>
     <TheHeader></TheHeader>
-    <GetKakaoMap />
+    <TheWholeList></TheWholeList>
+    <!-- <GetKakaoMap /> -->
     <!-- <KakaoMap></KakaoMap> -->
     <!-- <TheBoardView/> -->
     <!-- <TheBoardWrite /> -->

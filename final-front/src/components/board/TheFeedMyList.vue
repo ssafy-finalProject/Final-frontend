@@ -4,9 +4,9 @@ import TheFeedListItem from "./item/TheFeedListItem.vue";
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { listMyArticle } from "../../api/board";
-import { useAuthStore} from '../../stores/userStore';
+import { useAuthStore } from "../../stores/userStore";
 const authStore = useAuthStore();
-const {piniaUser} = authStore;
+const { piniaUser } = authStore;
 onMounted(() => {
   getArticleList();
 });
@@ -17,8 +17,6 @@ const currentPage = ref(1);
 const totalPage = ref(0);
 const { VITE_ARTICLE_LIST_SIZE } = import.meta.env;
 const articles = ref([]);
-
-
 
 const selectOption = ref([
   { text: "검색조건", value: "" },
