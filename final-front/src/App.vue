@@ -19,9 +19,10 @@ import GetKakaoMap from "./components/map/GetKakaoMap.vue";
     <!-- <KakaoMap></KakaoMap> -->
     <!-- <TheBoardView/> -->
     <!-- <TheBoardWrite /> -->
+    <!-- <TheFeedWrite></TheFeedWrite> -->
     <!-- <TheMap></TheMap> -->
     <!-- <KakaoMap></KakaoMap> -->
-    <!-- <router-view></router-view> -->
+    <router-view></router-view>
     <!-- <TheFooter></TheFooter> -->
   </div>
 </template>
