@@ -75,7 +75,7 @@ const onSubmit = () => {
       console.log(fail);
     }
   );
-  //router.push("myfeed");
+  router.push("myfeed");
 };
 
 const requestSend = () => {
