@@ -38,8 +38,24 @@ function listMyArticle(id, word, pgno, success, fail) {
   Rest.get(`${url}/mylist?id=${id}&word=${word}&pgno=${pgno}`).then(success).catch(fail);
 }
 
-function wholeArticle(word,success,fail){
+function wholeArticle(word, success, fail) {
   Rest.get(`${url}/wholelist?word=${word}`).then(success).catch(fail);
 }
 
-export { listArticle, totalArticle, writeArticle, deleteArticle, getArticle, modifyArticle, listMyArticle, wholeArticle };
+function getDetails(articleno, success, fail) {
+  Rest.get(`${url}/getDetails/` + articleno)
+    .then(success)
+    .catch(fail);
+}
+
+export {
+  listArticle,
+  totalArticle,
+  writeArticle,
+  deleteArticle,
+  getArticle,
+  modifyArticle,
+  listMyArticle,
+  wholeArticle,
+  getDetails,
+};
