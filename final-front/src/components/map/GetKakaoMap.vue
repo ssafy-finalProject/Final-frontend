@@ -1,74 +1,16 @@
 <script setup>
 import { ref, watch, onMounted } from "vue";
-import TravelList from "../components/map/TravelList.vue";
 import { listDetail } from "@/api/map";
 
 var map;
 var realData = ref([]);
-const articleNo = 1;
+const articleNo = 4;
 let polyline;
-const coordinate = ref([]); // 좌표 값 찾기
+const markerPins = ref([]);
+const locationData = ref([]);
 const markers = ref([]); // 시작지
 const stopover = ref([]); // 경유지
 const destination = ref([]); // 도착지
-
-// 부모가 자식의 이벤트 처리에 대한 listen 처리
-const listenList = () => {
-  // polyline이 그려져 있으면 값을 비운다.
-  if (polyline) {
-    polyline.setMap(null);
-    console.log(polyline);
-  }
-  // 배열 비우기
-  // markers.value = [...newMarkers];
-  // stopover.value = [...newStopover];
-  // destination.value = [...newDestination];
-  console.log(markers, stopover, destination);
-
-  var linePath = [];
-
-  linePath.push(new kakao.maps.LatLng(markers.value[0].y, markers.value[0].x));
-  for (let i = 0; i < stopover.value.length; i++) {
-    linePath.push(
-      new kakao.maps.LatLng(stopover.value[i].y, stopover.value[i].x)
-    );
-  }
-  linePath.push(
-    new kakao.maps.LatLng(destination.value[0].y, destination.value[0].x)
-  );
-  console.log("좌표 값들: " + linePath);
-  // 지도에 표시할 선을 생성합니다
-  polyline = new kakao.maps.Polyline({
-    path: linePath, // 선을 구성하는 좌표배열 입니다
-    strokeWeight: 5, // 선의 두께 입니다
-    strokeColor: "#FFAE00", // 선의 색깔입니다
-    strokeOpacity: 0.7, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
-    strokeStyle: "solid", // 선의 스타일입니다
-  });
-  console.log(polyline);
-  // 지도에 선을 표시합니다
-  polyline.setMap(map);
-  // 선을 구성하는 좌표 배열입니다. 이 좌표들을 이어서 선을 표시합니다
-}; // 기존의 배열 값을 전부 비우고, emit 받은 값들로 전부 replace 한다.
-
-// data Conversion 의 필요성을 가지고, 작성하는 함수
-const transformData = (data, type) => {
-  if (data.value.length === 1) {
-    return {
-      place_name: data.value[0].place_name,
-      latitude: parseFloat(data.value[0].y),
-      longitude: parseFloat(data.value[0].x),
-      category: type,
-    };
-  } else {
-    return data.value.map((item) => ({
-      place_name: item.place_name,
-      latitude: parseFloat(item.y),
-      longitude: parseFloat(item.x),
-      category: type,
-    }));
-  }
-}; // detailDto에 대한 수정이 필요
 
 var ps;
 var infowindow;
@@ -82,7 +24,10 @@ onMounted(() => {
       import.meta.env.VITE_KAKAO_MAP_SERVICE_KEY
     }&libraries=services,clusterer`;
     /* global kakao */
-    script.onload = () => kakao.maps.load(() => initMap());
+    script.onload = () =>
+      kakao.maps.load(() => {
+        initMap();
+      });
     document.head.appendChild(script);
   }
 });
@@ -91,31 +36,137 @@ const initMap = () => {
   const container = document.getElementById("map");
 
   listDetail(
-    1,
+    articleNo,
     ({ data }) => {
       console.log(data);
-      markers.value = data.markers;
-      stopover.value = data.stopover;
-      destination.value = data.destination;
-      console.log("markers = " + markers.value);
-      console.log("stopover = " + stopover.value);
-      console.log("destination = " + destination.value);
+      // console.log(data[0].category);
+      const options = {
+        center: new kakao.maps.LatLng(37.500613, 127.036431),
+        level: 5,
+      };
+      map = new kakao.maps.Map(container, options);
+      ps = new kakao.maps.services.Places();
+      infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
+
+      for (let i = 0; i < data.length; i++) {
+        const markerData = { ...data[i] };
+        locationData.value.push(markerData);
+
+        if (data[i].category === "시작지") {
+          console.log("시작지");
+          markers.value = { ...data[i] };
+        } else if (data[i].category === "경유지") {
+          console.log("경유지");
+          stopover.value.push({ ...data[i] });
+        } else if (data[i].category === "도착지") {
+          console.log("도착지");
+          destination.value = { ...data[i] };
+        }
+      }
+      console.log("markers = ", markers.value);
+      console.log("stopover = ", stopover.value);
+      console.log("destination = ", destination.value);
+      displayRoute();
     },
     (fail) => {
       console.log(fail);
     }
-  ) // article_no 가 1번일 때, 지도의 좌표 값 출력
-    // markers , stopover, destination 에 값  
-  const options = {
-    center: new kakao.maps.LatLng(37.500613, 127.036431),
-    level: 5,
-  }; // options 에 시작지 , 경유지, 도착지 에 대한 정보들을 받아서 map에 출력해주는 형식이 필요.
+  ); // article_no 가 1번일 때, 지도의 좌표 값 출력
+  // markers , stopover, destination 에 값
 
-  map = new kakao.maps.Map(container, options);
   ps = new kakao.maps.services.Places();
   infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
+  console.log("입력");
 };
 
+const displayRoute = () => {
+  if (polyline) {
+    polyline.setMap(null);
+  }
+
+  const linePath = [];
+
+  // console.log(markers.value);
+  // 마커 표시
+  const markerOptions = {
+    map: map,
+    position: new kakao.maps.LatLng(
+      markers.value.latitude,
+      markers.value.longitude
+    ),
+  };
+  const marker = new kakao.maps.Marker(markerOptions);
+  markerPins.value.push(marker);
+
+  linePath.push(
+    new kakao.maps.LatLng(markers.value.latitude, markers.value.longitude)
+  );
+
+  for (let i = 0; i < stopover.value.length; i++) {
+    const stopoverOptions = {
+      map: map,
+      position: new kakao.maps.LatLng(
+        stopover.value[i].latitude,
+        stopover.value[i].longitude
+      ),
+    };
+    let stopoverMarker = new kakao.maps.Marker(stopoverOptions);
+    markerPins.value.push(stopoverMarker);
+
+    linePath.push(
+      new kakao.maps.LatLng(
+        stopover.value[i].latitude,
+        stopover.value[i].longitude
+      )
+    );
+  }
+
+  const destinationOptions = {
+    map: map,
+    position: new kakao.maps.LatLng(
+      destination.value.latitude,
+      destination.value.longitude
+    ),
+  };
+  const destinationMarker = new kakao.maps.Marker(destinationOptions);
+  markerPins.value.push(destinationMarker);
+
+  linePath.push(
+    new kakao.maps.LatLng(
+      destination.value.latitude,
+      destination.value.longitude
+    )
+  );
+
+  // 마커와 선 표시
+  polyline = new kakao.maps.Polyline({
+    path: linePath,
+    strokeWeight: 5,
+    strokeColor: "#FFAE00",
+    strokeOpacity: 0.7,
+    strokeStyle: "solid",
+  });
+
+  polyline.setMap(map);
+  mapInit();
+};
+
+function mapInit() {
+  console.log(locationData.value[0].latitude);
+  console.log(locationData.value.length);
+  var bounds = new kakao.maps.LatLngBounds();
+  for (let i = 0; i < locationData.value.length; i++) {
+    bounds.extend(
+      new kakao.maps.LatLng(
+        locationData.value[i].latitude,
+        locationData.value[i].longitude
+      )
+    );
+  }
+
+  // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
+  map.setBounds(bounds);
+}
 // 키워드 검색 완료 시 호출되는 콜백함수 입니다
 function placesSearchCB(data, status, pagination) {
   if (status === kakao.maps.services.Status.OK) {
