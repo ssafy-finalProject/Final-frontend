@@ -203,7 +203,9 @@ const handlePanelOpen = (openedPanelKey) => {
     <!--  -->
 
     <!--  -->
-    <div>
+    
+  </div>
+  <div class="margin-bottom">
       <table>
         <thead>
           <tr>
@@ -226,10 +228,13 @@ const handlePanelOpen = (openedPanelKey) => {
         </template>
       </table>
     </div>
-  </div>
 </template>
 
 <style scoped>
+.margin-bottom {
+  padding: 30px 0;
+}
+
 /* 공통 스타일 */
 .feed-name,
 .feed-like,

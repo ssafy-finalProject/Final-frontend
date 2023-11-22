@@ -150,7 +150,7 @@ const initMap = () => {
 
   map = new kakao.maps.Map(container, options);
   ps = new kakao.maps.services.Places();
-  infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
+  infowindow = new kakao.maps.InfoWindow({ zIndex: 2 });
 };
 
 // 키워드 검색 완료 시 호출되는 콜백함수 입니다
@@ -203,6 +203,11 @@ function displayMarker(place) {
   // 마커에 클릭이벤트를 등록합니다
   kakao.maps.event.addListener(marker, "click", function () {
     // 마커를 클릭하면 장소명이 인포윈도우에 표출됩니다
+    const style = {
+      "background-color": "inherit",
+      "border-radius": "10px",
+      padding: "1px 8px"
+    };
     infowindow.setContent(`
       <div class="infowindow-container">
         <div style="margin-bottom: 5px;">${place.place_name}</div>
@@ -305,5 +310,11 @@ function displayMarker(place) {
   width: 90px;
   justify-content: center;
   float: right;
+}
+
+button {
+  background-color: white;
+  border-radius: 10px;
+  padding: 1px 8px
 }
 </style>

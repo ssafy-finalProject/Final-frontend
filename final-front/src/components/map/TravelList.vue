@@ -33,24 +33,17 @@ const removeStopover = (stop) => {
 
 <template>
   <a-collapse v-model:activeKey="activeKey" @change="changeActivekey">
-    <a-collapse-panel>
-      <button @click="sendDataList">결정</button>
-      <!-- 버튼을 눌렀을 때, 현재 시작지, 경유지, 도착지를 emit으로 부모에 보내준다. -->
-    </a-collapse-panel>
+
     <a-collapse-panel key="1" header="시작점">
-      <a-collapse default-active-key="4">
-        <a-collapse-panel key="4" header="넣을 패널">
-          <div v-for="marker in markers" :key="marker.id">  
-            <p>{{ marker.place_name }}</p>
-          </div>
-        </a-collapse-panel>
-      </a-collapse>
+      <div v-for="marker in markers" :key="marker.id">  
+        <p>{{ marker.place_name }}</p>
+      </div>
     </a-collapse-panel>
     <a-collapse-panel key="2" header="경유지">
       <div v-for="stop in stopover" :key="stop.id">
         <p>
           {{ stop.place_name }}
-          <button @click="() => removeStopover(stop)">X</button>
+          <button class="remove" @click="() => removeStopover(stop)">X</button>
         </p>
       </div>
     </a-collapse-panel>
@@ -59,7 +52,29 @@ const removeStopover = (stop) => {
         <p>{{ dest.place_name }}</p>
       </div>
     </a-collapse-panel>
+    <button @click="sendDataList" id="detection">결정</button>
   </a-collapse>
 </template>
 
-<style scoped></style>
+<style scoped>
+button {
+  background-color: white;
+  border-radius: 10px;
+  padding: 1px 8px
+}
+
+.remove {
+  /* border-color: red;
+  color: red; */
+  border: none;
+  background-color:crimson;
+  color: white;
+  border-radius: 5px;
+}
+
+#detection {
+  margin: 20px;
+  font-weight: bold;
+  font-size: 30px;
+}
+</style>

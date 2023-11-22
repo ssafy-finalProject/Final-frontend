@@ -4,6 +4,7 @@ import { useRouter } from "vue-router";
 import { writeArticle } from "@/api/board";
 import { useAuthStore } from "../../stores/userStore";
 import TravelList from "@/components/map/TravelList.vue";
+
 var map;
 var realData = ref([]);
 let polyline;
@@ -413,14 +414,37 @@ const closeAndSaveMemo = function () {
   // 메모 입력 필드 초기화
   memo.value = "";
 };
+
+// div용 변수
+const divNo1 = ref(0);
+
+const addFuc = () => {
+  divNo1.value += 1;
+  if (divNo1.value > 2) {
+    divNo1.value = 2;
+  }
+}
+
+const minusFuc = () => {
+  divNo1.value -= 1;
+  if (divNo1.value < 0) {
+    divNo1.value = 0;
+  }
+}
 </script>
 <template>
-  <div class="container">
+  <div>
+    <div class="abs">
+      <button @click="minusFuc" class="padding">이전</button>
+      <button @click="addFuc" class="padding">다음</button>
+    </div>
+   
+    <div class="container" v-show="divNo1 == 0">
     <div id="search">
       <input v-model="searchKeyword" placeholder="장소를 검색하세요." />
       <button @click="searchPlaces">검색</button>
     </div>
-    <div class="container-fluid row">
+    <div class="container-fluid row"> 
       <div id="map" class="col-8"></div>
       <TravelList
         :markers="markers"
@@ -433,11 +457,8 @@ const closeAndSaveMemo = function () {
     </div>
     <!-- <button id="determine" @click="requestSend">최종 결정</button> -->
     <!-- 최종 결정을 눌렀을 때에, 현재의 시작지, 경유지, 도착지를 기준으로 post로 서버에 보내준다.-->
-  </div>
-  <!--  -->
-  <!--  -->
-  <!--  -->
-  <div>
+    </div>
+    <div v-show="divNo1 == 1">
     <div class="month-navigation">
       <button @click="previousMonth">이전 달</button>
       <h2>{{ currentMonthYear }}</h2>
@@ -470,15 +491,16 @@ const closeAndSaveMemo = function () {
     </table>
     <div v-if="showModal">
       <div class="modal-content">
-        <span class="close" @click="showModal = false">&times;</span>
-        <p>{{ realMonth }}월 {{ realDay }}일의 메모</p>
-        <textarea v-model="memo"></textarea>
+        <div>
+          <span class="close" @click="showModal = false">&times;</span>
+          <p>{{ realMonth }}월 {{ realDay }}일의 메모</p>
+        </div>
+        <textarea class="textarea" rows="4" v-model="memo"></textarea>
         <button @click="closeAndSaveMemo">저장</button>
       </div>
     </div>
-  </div>
-  <!--  -->
-  <div class="rightPage">
+    </div>
+    <div class="rightPage" v-show="divNo1 == 2">
     <form class="upload-form" @submit.prevent="onSubmit">
       <div class="upload-container">
         <div class="form-group">
@@ -508,7 +530,9 @@ const closeAndSaveMemo = function () {
         <button type="submit" id="upload">업로드</button>
       </div>
     </form>
+    </div>
   </div>
+  
 </template>
 
 <style scoped>
@@ -565,12 +589,32 @@ button#upload {
 .container {
   display: flex;
   flex-direction: column;
+  position: relative;
   /* height: 100vh; */
 }
 
 #search {
-  width: 100%;
-  padding: 10px;
+  /* width: 100%; */
+  /* padding: 10px; */
+  position: absolute;
+  top: -40px;
+  right: 40px;
+}
+
+.abs {
+  text-align: start;
+  margin-left: 12px;
+  margin-bottom: 10px;
+}
+
+button {
+  background-color: inherit;
+  border-radius: 10px;
+  padding: 1px 8px
+}
+
+.padding {
+  margin-right: 10px;
 }
 
 #map {
@@ -648,10 +692,14 @@ th {
 
 .modal-content {
   background-color: #fefefe;
-  margin: 15% auto;
+  margin: -35% auto;
   padding: 20px;
   border: 1px solid #888;
   width: 80%;
+}
+
+.textarea {
+  margin-bottom: 15px;
 }
 
 .close {
@@ -659,6 +707,7 @@ th {
   float: right;
   font-size: 28px;
   font-weight: bold;
+  margin-top: -8px;
 }
 
 .close:hover,
