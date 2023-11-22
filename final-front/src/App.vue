@@ -19,7 +19,7 @@ import TheViewCalendar from "./components/board/TheViewCalendar.vue";
   <div>
     <TheHeader></TheHeader>
     <router-view></router-view>
-    <TheWholeList></TheWholeList>
+    <!-- <TheWholeList></TheWholeList> -->
     <!-- <TheViewCalendar></TheViewCalendar> -->
     <!-- <TheCalendar></TheCalendar> -->
     <!-- <GetKakaoMap /> -->
