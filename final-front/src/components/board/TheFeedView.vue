@@ -89,7 +89,11 @@ onMounted(async () => {
         >
       </div>
 
-      <img class="feed_img" :src="imagePath" alt="Uploaded Image" />
+      <div class="carousel-inner" role="listbox">
+        <div v-for="(image, index) in imageUrl" :key="index" :class="{ active: index === 0 }" class="carousel-item">
+          <img :src="image" alt="main-img" />
+        </div>
+      </div>
       <div class="feed_icon">
         <div>
           <span class="material-icons-outlined"> 좋아요버튼</span>
