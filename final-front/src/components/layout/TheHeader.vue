@@ -27,19 +27,16 @@ onMounted(() => {
       </button>
       <div class="collapse navbar-collapse" id="collapsibleNavbar">
         <ul class="navbar-nav me-auto">
-          <li class="nav-item"><a class="nav-link" href="#">공지사항</a></li>
+          <li class="nav-item"></li>
           <li class="nav-item">
-            <!-- <a class="nav-link" href="${root}/article/list?pgno=1&key=&word="> -->
-            <!-- <a class="nav-link"> <router-link :to="{ name: 'board' }"> 여행지 추천 </router-link></a> -->
           </li>
-          <li class="nav-item"><a class="nav-link" href="#">여행 후기</a></li>
+          <li class="nav-item"></li>
           <li class="nav-item">
-            <a class="nav-link" href="${root}/enjoytrip/newpage">지역별 검색</a>
           </li>
         </ul>
         <!-- <c:choose>
         <c:when test="${empty userInfo.userId }"> -->
-        <ul v-if="!piniaUser.isLoginned" class="navbar-nav">
+        <ul v-if="!piniaUser.isLoginned" class="navbar-nav ml-auto">
           <li class="nav-item">
             <router-link to="/login" class="text-decoration-none">
               <a class="nav-link">로그인</a>
