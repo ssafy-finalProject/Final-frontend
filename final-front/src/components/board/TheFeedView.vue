@@ -28,20 +28,14 @@ onMounted(async () => {
     console.log(boardArticle.value.subject);
 
     if (boardArticle.value.dtos.length !== 0) {
-      console.log("이프이프");
-      console.log("패쓰:" + boardArticle.value.dtos[0].path);
+      // console.log("이프이프");
+      // console.log("패쓰:" + boardArticle.value.dtos[0].path);
       //사진받아오기
-      // const response = Rest.get(
-      //   "/board/" + boardArticle.value.dtos[0].path + "/" + boardArticle.value.dtos[0].originalFileName
-      // );
-      //imagePath = response.data.url;
-      // for (let i = 0; i < boardArticle.value.dtos.length; i++) {
-      //   const reader = new FileReader();
-      //   reader.onload = (e) => {
-      //     imageUrl.value[i] = e.target.result;
-      //   };
-      //   reader.readAsDataURL(boardArticle.value.dtos[i].path);
-      // }
+      for(let i=0;i<boardArticle.value.dtos.length;i++){
+        imageUrl.value.push(`http://localhost:80/board/`+boardArticle.value.dtos[i].path+`/`+boardArticle.value.dtos[i].savedFileName);
+        
+      }
+      console.log(imageUrl.value);
     }
   };
 
@@ -90,7 +84,7 @@ onMounted(async () => {
       </div>
 
       <div class="carousel-inner" role="listbox">
-        <div v-for="(image, index) in imageUrl" :key="index" :class="{ active: index === 0 }" class="carousel-item">
+        <div v-for="(image, index) in imageUrl" :key="index" :class="{ active: index === 0 }">
           <img :src="image" alt="main-img" />
         </div>
       </div>
