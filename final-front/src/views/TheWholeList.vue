@@ -175,14 +175,18 @@ const handlePanelOpen = (openedPanelKey) => {
         <input type="text" class="form-control" v-model="word" placeholder="검색어..." />
         <button class="btn btn-dark" type="button" @click="getArticleList">검색</button>
       </div>
-
+<div class="scroll-container" style="max-height: 650px; overflow-y: auto;">
       <a-collapse class="mt-3" @change="handleCollapseChange">
         <a-collapse-panel accordion v-for="article in articles" :key="article.article_no">
           <template #header>
             <div class="custom-header">
-              <span>{{ article.subject }}</span>
-              <span class="additional-text">좋아요 수 : {{ article.hit }}</span>
-            </div>
+    <div class="header-left">
+      <span>{{ article.subject }}</span>
+    </div>
+    <div class="header-right">
+      <span class="additional-text">좋아요 수 : {{ article.hit }}</span>
+    </div>
+  </div>
           </template>
           <div class="main_feed">
             <div class="feed_box">
@@ -197,23 +201,20 @@ const handlePanelOpen = (openedPanelKey) => {
               </div>
               <div class="feed_icon">
                 <div>
-                  <span class="material-icons-outlined"> 좋아요버튼</span>
+                  <span class="material-icons-outlined"> ♥좋아요</span>
                 </div>
               </div>
               <div class="feed_like">
-                <p class="feed_txt"><b>좋아요 10개</b></p>
+                <p class="feed_txt"><b>좋아요 {{ article.hit }}개</b></p>
               </div>
               <div class="feed_content">
                 <p class="feed_txt">{{ article.content }}</p>
-              </div>
-              <div class="feed_reply">
-                <span class="feed_txt"> <b> chew012 </b> 축하해 ~ </span>
-                <span class="feed_txt"> <b> hoo486 </b> 멋찌다 ~ </span>
               </div>
             </div>
           </div>
         </a-collapse-panel>
       </a-collapse>
+    </div>
     </div>
     <!--  -->
 
@@ -351,5 +352,16 @@ img{
   width: 80%;
   height: 80%;
 }
+.custom-header {
+  display: flex;
+  justify-content: space-between;
+}
 
+.header-left {
+  order: 1; /* 왼쪽에 위치하는 요소의 순서 */
+}
+
+.header-right {
+  order: 2; /* 오른쪽에 위치하는 요소의 순서 */
+}
 </style>
