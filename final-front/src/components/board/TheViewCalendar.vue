@@ -2,19 +2,13 @@
 import { ref } from "vue";
 import { getCalendars } from "@/api/board";
 
-let number = ref(1);
 const arr = ref(null);
 
 const handleButtonClick = () => {
-  console.log(number.value);
   getCalendars(
     number.value,
     ({ data }) => {
-      console.log(data);
       arr.value = data;
-      console.log(arr.value[0].day);
-      console.log("길이" + arr.value.length);
-      console.log("진짜?" + arr.value);
     },
     (fail) => {
       console.log(fail);

@@ -1,11 +1,11 @@
 <script setup>
 import { ref, watch, onMounted } from "vue";
-import { wholeArticle, getDetails } from "@/api/board";
+import { wholeArticle, getDetails, getCalendars } from "@/api/board";
 import GetKakaoMap from "@/components/map/GetKakaoMap.vue";
 const word = ref("");
 const openedPanelKeys = ref([]);
 const articles = ref([]);
-
+const arr = ref(null);
 const allInforms = ref([]);
 const flag = ref(0);
 
@@ -65,9 +65,7 @@ const handleCollapseChange = (keys) => {
     //console.log("방금 클릭해서 열린 패널의 key:", newOpenedPanelKey);
 
     // 기존에 열려있던 패널들의 key를 배열에서 제거
-    openedPanelKeys.value = openedPanelKeys.value.filter(
-      (key) => key !== newOpenedPanelKey
-    );
+    openedPanelKeys.value = openedPanelKeys.value.filter((key) => key !== newOpenedPanelKey);
 
     // 방금 열린 패널의 key를 배열에 추가
     openedPanelKeys.value.push(newOpenedPanelKey);
@@ -86,7 +84,15 @@ const handlePanelOpen = (openedPanelKey) => {
   stopover.value.arr = [];
   destination.value.arr = [];
   flag.value = Number(new Date().getMilliseconds());
-
+  getCalendars(
+    openedPanelKey,
+    ({ data }) => {
+      arr.value = data;
+    },
+    (fail) => {
+      console.log(fail);
+    }
+  );
   getDetails(
     openedPanelKey,
     ({ data }) => {
@@ -150,32 +156,15 @@ const handlePanelOpen = (openedPanelKey) => {
 
 <template>
   <div class="container mt-5" style="display: flex">
-    <GetKakaoMap
-      :markers="markers"
-      :stopover="stopover"
-      :destination="destination"
-      :flag="flag"
-    >
-    </GetKakaoMap>
+    <GetKakaoMap :markers="markers" :stopover="stopover" :destination="destination" :flag="flag"> </GetKakaoMap>
     <div id="container">
       <div class="input-group input-group-sm">
-        <input
-          type="text"
-          class="form-control"
-          v-model="word"
-          placeholder="검색어..."
-        />
-        <button class="btn btn-dark" type="button" @click="getArticleList">
-          검색
-        </button>
+        <input type="text" class="form-control" v-model="word" placeholder="검색어..." />
+        <button class="btn btn-dark" type="button" @click="getArticleList">검색</button>
       </div>
 
       <a-collapse class="mt-3" @change="handleCollapseChange">
-        <a-collapse-panel
-          accordion
-          v-for="article in articles"
-          :key="article.article_no"
-        >
+        <a-collapse-panel accordion v-for="article in articles" :key="article.article_no">
           <template #header>
             <div class="custom-header">
               <span>{{ article.subject }}</span>
@@ -210,6 +199,32 @@ const handlePanelOpen = (openedPanelKey) => {
           </div>
         </a-collapse-panel>
       </a-collapse>
+    </div>
+    <!--  -->
+
+    <!--  -->
+    <div>
+      <table>
+        <thead>
+          <tr>
+            <th>날짜</th>
+            <th>내용</th>
+          </tr>
+        </thead>
+        <template v-if="arr && arr.length > 0">
+          <tbody>
+            <tr v-for="(item, index) in arr" :key="index">
+              <td>{{ item.year }}년 {{ item.month }}월 {{ item.day }}일</td>
+              <td>{{ item.memoContent }}</td>
+            </tr>
+          </tbody>
+        </template>
+        <template v-else>
+          <tr>
+            <td colspan="2">데이터가 없습니다.</td>
+          </tr>
+        </template>
+      </table>
     </div>
   </div>
 </template>
@@ -294,5 +309,21 @@ GetKakaoMap {
 /* Flex Container 스타일 추가 */
 .flex-container {
   display: flex;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th,
+td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+th {
+  background-color: #f2f2f2;
 }
 </style>
