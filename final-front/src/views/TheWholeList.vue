@@ -9,9 +9,15 @@ const articles = ref([]);
 const allInforms = ref([]);
 const flag = ref(0);
 
-var markers = ref([]); // 시작지
-var stopover = ref([]); // 경유지
-var destination = ref([]); // 도착지
+var markers = ref({
+  arr: [],
+}); // 시작지
+var stopover = ref({
+  arr: [],
+}); // 경유지
+var destination = ref({
+  arr: [],
+}); // 도착지
 
 const boardArticle = ref({
   user_id: "",
@@ -24,6 +30,8 @@ const boardArticle = ref({
 });
 //
 onMounted(() => {
+  console.log("!!!markers.value.arr");
+  console.log(markers.value.arr);
   getArticleList();
 });
 
@@ -74,32 +82,38 @@ const handlePanelOpen = (openedPanelKey) => {
   //console.log("실행중");
   //collape 누르는 순간 정보 얻어와야된다.
 
-  markers.value = [];
-  stopover.value = [];
-  destination.value = [];
-  flag.value = (Number)(new Date().getMilliseconds());
+  markers.value.arr = [];
+  stopover.value.arr = [];
+  destination.value.arr = [];
+  flag.value = Number(new Date().getMilliseconds());
 
   getDetails(
     openedPanelKey,
     ({ data }) => {
-      //console.log(data);
+      console.log(data);
       for (let i = 0; i < data.length; i++) {
         if (data[i].category === "시작지") {
           // markers.value = { ...data[i] };
-          markers.value.push(data[i]);
+          // console.log("!markers.value.arr");
+          // console.log(markers.value.arr);
+          // console.log(markers.value.arr.length);
+          // console.log("data[i]");
+          // console.log(data[i]);
+          markers.value.arr.push(data[i]);
+          // console.log(markers.value.arr);
         } else if (data[i].category === "경유지") {
           // stopover.value = { ...data[i] };
-          stopover.value.push(data[i]);
+          stopover.value.arr.push(data[i]);
         } else if (data[i].category === "도착지") {
           // destination.value = { ...data[i] };
-          destination.value.push(data[i]);
+          destination.value.arr.push(data[i]);
         }
       }
-      flag.value = (Number)(new Date().getMilliseconds());
+      flag.value = Number(new Date().getMilliseconds());
 
-      console.log(markers.value);
-      console.log(stopover.value);
-      console.log(destination.value);
+      console.log(markers.value.arr);
+      console.log(stopover.value.arr);
+      console.log(destination.value.arr);
       // console.log(data);
       // markers.value = data[0];
       // console.log(markers.value);
@@ -136,9 +150,14 @@ const handlePanelOpen = (openedPanelKey) => {
 
 <template>
   <div class="container mt-5" style="display: flex">
-    <GetKakaoMap :markers="markers" :stopover="stopover" :destination="destination" :flag="flag">
+    <GetKakaoMap
+      :markers="markers"
+      :stopover="stopover"
+      :destination="destination"
+      :flag="flag"
+    >
     </GetKakaoMap>
-    <div id="container" >
+    <div id="container">
       <div class="input-group input-group-sm">
         <input
           type="text"
