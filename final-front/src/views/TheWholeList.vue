@@ -1,6 +1,6 @@
 <script setup>
 import { ref, watch, onMounted } from "vue";
-import { wholeArticle, getDetails, getCalendars } from "@/api/board";
+import { wholeArticle, getDetails, getCalendars,getArticle } from "@/api/board";
 import GetKakaoMap from "@/components/map/GetKakaoMap.vue";
 const word = ref("");
 const openedPanelKeys = ref([]);
@@ -8,7 +8,7 @@ const articles = ref([]);
 const arr = ref(null);
 const allInforms = ref([]);
 const flag = ref(0);
-
+const imageUrl = ref([]);
 var markers = ref({
   arr: [],
 }); // 시작지
@@ -30,8 +30,8 @@ const boardArticle = ref({
 });
 //
 onMounted(() => {
-  console.log("!!!markers.value.arr");
-  console.log(markers.value.arr);
+  // console.log("!!!markers.value.arr");
+  // console.log(markers.value.arr);
   getArticleList();
 });
 
@@ -39,7 +39,7 @@ onMounted(() => {
 //검색어에 뭔가있으면 해당 검색어를 detail의 placename으로 가지고 있는 board를 모두  띄운다.
 
 const getArticleList = () => {
-  console.log(word.value);
+  // console.log(word.value);
   wholeArticle(
     word.value,
     ({ data }) => {
@@ -48,7 +48,7 @@ const getArticleList = () => {
       // console.log(articles.value);
     },
     (fail) => {
-      console.log(fail);
+      // console.log(fail);
     }
   );
 };
@@ -96,7 +96,7 @@ const handlePanelOpen = (openedPanelKey) => {
   getDetails(
     openedPanelKey,
     ({ data }) => {
-      console.log(data);
+      // console.log(data);
       for (let i = 0; i < data.length; i++) {
         if (data[i].category === "시작지") {
           // markers.value = { ...data[i] };
@@ -117,9 +117,9 @@ const handlePanelOpen = (openedPanelKey) => {
       }
       flag.value = Number(new Date().getMilliseconds());
 
-      console.log(markers.value.arr);
-      console.log(stopover.value.arr);
-      console.log(destination.value.arr);
+      // console.log(markers.value.arr);
+      // console.log(stopover.value.arr);
+      // console.log(destination.value.arr);
       // console.log(data);
       // markers.value = data[0];
       // console.log(markers.value);
@@ -131,9 +131,22 @@ const handlePanelOpen = (openedPanelKey) => {
       // console.log(destination.value);
     },
     (fail) => {
-      console.log(fail);
+      // console.log(fail);
     }
   );
+  getArticle(openedPanelKey,(success)=>{
+    boardArticle.value = success.data;
+    if (boardArticle.value.dtos.length !== 0) {
+      for(let i=0;i<boardArticle.value.dtos.length;i++){
+        imageUrl.value.push(`http://localhost:80/board/`+boardArticle.value.dtos[i].path+`/`+boardArticle.value.dtos[i].savedFileName);
+        
+      }
+      console.log("이미지"+imageUrl.value);
+    }
+  },(fail)=>{
+    console.log(fail);
+  })
+
 };
 //
 
@@ -179,7 +192,9 @@ const handlePanelOpen = (openedPanelKey) => {
                 >
               </div>
 
-              <img class="feed_img" src="" alt="Uploaded Image" />
+              <div v-for="(image, index) in imageUrl" :key="index" :class="{ active: index === 0 }">
+                <img :src="image" alt="main-img" />
+              </div>
               <div class="feed_icon">
                 <div>
                   <span class="material-icons-outlined"> 좋아요버튼</span>
@@ -331,4 +346,10 @@ td {
 th {
   background-color: #f2f2f2;
 }
+
+img{
+  width: 80%;
+  height: 80%;
+}
+
 </style>

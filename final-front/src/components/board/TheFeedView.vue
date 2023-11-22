@@ -164,4 +164,9 @@ onMounted(async () => {
 span {
   padding-right: 5px;
 }
+
+img{
+  width: 80%;
+  height: 80%;
+}
 </style>
