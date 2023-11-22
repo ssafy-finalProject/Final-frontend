@@ -52,7 +52,7 @@ const onSubmit = () => {
   Imagefiles.value.forEach((ele) => {
     console.log("넘길 파일 " + ele);
   });
-  
+
   const dataToSend = ref({
     markers: transformData(markers, "시작지"),
     stopover: transformData(stopover, "경유지"),
@@ -60,7 +60,7 @@ const onSubmit = () => {
   });
   //무조건 글과 내용이 들어간 후에 사진업로드가 실행 되어야함
   let data = new FormData();
-  console.log("넘길 메모자료"+sendCalInform.value);
+  console.log("넘길 메모자료" + sendCalInform.value);
   data.append("user_id", feedArticle.value.user_id);
   data.append("subject", feedArticle.value.subject);
   data.append("content", feedArticle.value.content);
@@ -296,21 +296,13 @@ function displayMarker(place) {
   };
 }
 
-
-
-
-
-
 ///////////////////////////////////////////////////////////////////////////////
-
 
 const currentDate = ref(new Date());
 const currentMonthYear = ref("");
 const calendar = ref([]);
 const selectedDate = ref(null);
 const memo = ref("");
-
-
 
 const realMonth = ref();
 const realDay = ref();
@@ -391,20 +383,26 @@ const closeAndSaveMemo = function () {
   // for(let i=0;i<sendCalInform.value.length;i++){
   //   if(sendCalInform.value[i].)
   // }
-  console.log("지금 찾아야될 day : "+ realDay.value);
-  console.log("sendCal의 정보는 : "+ JSON.stringify(sendCalInform.value));
-  let foundObject = sendCalInform.value.find(item => item.day===realDay.value&& item.month===realMonth.value);
+  console.log("지금 찾아야될 day : " + realDay.value);
+  console.log("sendCal의 정보는 : " + JSON.stringify(sendCalInform.value));
+  console.log("지금 년도는 :" + realYear.value);
+  let foundObject = sendCalInform.value.find((item) => item.day === realDay.value && item.month === realMonth.value);
   //해당 id를 가진 객체가 존재한다면
-  if(foundObject){
-    console.log("찾은객체의 day : "+foundObject.day+"현재 날짜의 id"+realDay.value);
-    console.log("날짜 메모가 존재하는 녀석이였고 그녀석의 정보는 : "+JSON.stringify(foundObject));
+  if (foundObject) {
+    console.log("찾은객체의 day : " + foundObject.day + "현재 날짜의 id" + realDay.value);
+    console.log("날짜 메모가 존재하는 녀석이였고 그녀석의 정보는 : " + JSON.stringify(foundObject));
     foundObject.memoContent = memo.value;
-    console.log("날짜 메모가 존재하는 녀석이였고 그녀석의 바뀐 정보는 : "+JSON.stringify(foundObject));
+    console.log("날짜 메모가 존재하는 녀석이였고 그녀석의 바뀐 정보는 : " + JSON.stringify(foundObject));
   }
   //없으면 새로 넣어서 저장
-  else{
-    sendCalInform.value.push({year:realYear,month:realMonth.value,day:realDay.value,memoContent:memo.value});
-    console.log("날짜 메모가 없는 녀석이여서 새로저장, 현재 sendcalInform은"+JSON.stringify(sendCalInform.value));
+  else {
+    sendCalInform.value.push({
+      year: realYear.value,
+      month: realMonth.value,
+      day: realDay.value,
+      memoContent: memo.value,
+    });
+    console.log("날짜 메모가 없는 녀석이여서 새로저장, 현재 sendcalInform은" + JSON.stringify(sendCalInform.value));
   }
 
   console.log(`메모 추가: ${realDay.value} - ${memo.value}`);
@@ -415,7 +413,6 @@ const closeAndSaveMemo = function () {
   // 메모 입력 필드 초기화
   memo.value = "";
 };
-
 </script>
 <template>
   <div class="container">
@@ -439,8 +436,8 @@ const closeAndSaveMemo = function () {
   </div>
   <!--  -->
   <!--  -->
-    <!--  -->
-    <div>
+  <!--  -->
+  <div>
     <div class="month-navigation">
       <button @click="previousMonth">이전 달</button>
       <h2>{{ currentMonthYear }}</h2>
@@ -480,7 +477,7 @@ const closeAndSaveMemo = function () {
       </div>
     </div>
   </div>
-<!--  -->
+  <!--  -->
   <div class="rightPage">
     <form class="upload-form" @submit.prevent="onSubmit">
       <div class="upload-container">
@@ -512,8 +509,6 @@ const closeAndSaveMemo = function () {
       </div>
     </form>
   </div>
-
-
 </template>
 
 <style scoped>
@@ -607,7 +602,7 @@ button#upload {
 
 /* 
  */
- body {
+body {
   font-family: Arial, sans-serif;
 }
 
@@ -672,6 +667,4 @@ th {
   text-decoration: none;
   cursor: pointer;
 }
-
-
 </style>
