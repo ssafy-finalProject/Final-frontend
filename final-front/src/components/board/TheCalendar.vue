@@ -3,6 +3,11 @@ import { ref, onMounted } from "vue";
 const currentDate = ref(new Date());
 const currentMonthYear = ref("");
 const calendar = ref([]);
+const selectedDate = ref(null);
+const memo = ref("");
+
+const realMonth = ref();
+const realDay = ref();
 
 const generateCalendar = function (year, month) {
   const firstDay = new Date(year, month, 1);
@@ -13,6 +18,9 @@ const generateCalendar = function (year, month) {
 
   const lastMonthLastDay = new Date(year, month, 0);
   const lastMonthTotalDays = lastMonthLastDay.getDate();
+
+  selectedDate.value = ref(null);
+  memo.value = "";
 
   let dayCount = 1;
   let calendarData = [];
@@ -36,6 +44,8 @@ const generateCalendar = function (year, month) {
 
   currentMonthYear.value = `${year}년 ${month + 1}월`;
   calendar.value = calendarData;
+
+  realMonth.value = month + 1;
 };
 
 const previousMonth = function () {
@@ -57,6 +67,25 @@ const updateCalendar = function () {
 onMounted(() => {
   updateCalendar();
 });
+
+const showModal = ref(false);
+
+const handleDateClick = function (day) {
+  console.log("클릭이벤트!! 클릭날짜: " + day);
+  selectedDate.value = day;
+  showModal.value = true;
+};
+
+const closeAndSaveMemo = function () {
+  // 모달에서 메모 저장 등의 작업 수행
+  console.log(`메모 추가: ${selectedDate.value} - ${memo.value}`);
+
+  // 모달 닫기
+  showModal.value = false;
+
+  // 메모 입력 필드 초기화
+  memo.value = "";
+};
 </script>
 
 <template>
@@ -81,12 +110,24 @@ onMounted(() => {
       </thead>
       <tbody>
         <tr v-for="(week, index) in calendar" :key="index">
-          <td v-for="(day, dayIndex) in week" :key="dayIndex" :class="{ inactive: day.inactive }">
+          <td
+            v-for="(day, dayIndex) in week"
+            :key="dayIndex"
+            :class="{ inactive: day.inactive }"
+            @click="handleDateClick(day.day)">
             {{ day.day !== "" ? day.day : "" }}
           </td>
         </tr>
       </tbody>
     </table>
+    <div v-if="showModal">
+      <div class="modal-content">
+        <span class="close" @click="showModal = false">&times;</span>
+        <p>{{ realMonth }}월 {{ selectedDate }}일의 메모</p>
+        <textarea v-model="memo"></textarea>
+        <button @click="closeAndSaveMemo">저장</button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -120,6 +161,40 @@ th {
 
 .month-navigation button {
   padding: 5px 10px;
+  cursor: pointer;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
   cursor: pointer;
 }
 </style>

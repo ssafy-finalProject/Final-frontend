@@ -49,7 +49,7 @@ onMounted(async () => {
     console.log(fail);
   };
 
-  await getArticle(6, successCallback, errorCallback);
+  await getArticle(boardArticle.article_no, successCallback, errorCallback);
 
   // await getArticle(
   //   33,

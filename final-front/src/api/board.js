@@ -48,6 +48,12 @@ function getDetails(articleno, success, fail) {
     .catch(fail);
 }
 
+function getCalendars(articleno, success, fail) {
+  Rest.get(`${url}/getCalendars/` + articleno)
+    .then(success)
+    .catch(fail);
+}
+
 export {
   listArticle,
   totalArticle,
@@ -58,4 +64,5 @@ export {
   listMyArticle,
   wholeArticle,
   getDetails,
+  getCalendars,
 };

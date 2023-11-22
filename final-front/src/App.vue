@@ -11,6 +11,8 @@ import TheFeedView from "./components/board/TheFeedView.vue";
 import TheFeedMyList from "./components/board/TheFeedMyList.vue";
 import GetKakaoMap from "./components/map/GetKakaoMap.vue";
 import TheWholeList from "./views/TheWholeList.vue";
+import TheCalendar from "./components/board/TheCalendar.vue";
+import TheViewCalendar from "./components/board/TheViewCalendar.vue";
 </script>
 
 <template>
@@ -18,6 +20,8 @@ import TheWholeList from "./views/TheWholeList.vue";
     <TheHeader></TheHeader>
     <router-view></router-view>
     <TheWholeList></TheWholeList>
+    <!-- <TheViewCalendar></TheViewCalendar> -->
+    <!-- <TheCalendar></TheCalendar> -->
     <!-- <GetKakaoMap /> -->
     <!-- <KakaoMap></KakaoMap> -->
     <!-- <TheBoardView/> -->
