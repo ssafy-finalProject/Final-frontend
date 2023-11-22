@@ -1,21 +1,36 @@
 <script setup>
-import { ref, watch, onMounted } from "vue";
-import { listDetail } from "@/api/map";
+import { ref, watch, onMounted, watchEffect } from "vue";
 
 var map;
-var realData = ref([]);
-const articleNo = 4;
-let polyline;
-const markerPins = ref([]);
-const locationData = ref([]);
-const markers = ref([]); // 시작지
-const stopover = ref([]); // 경유지
-const destination = ref([]); // 도착지
-
 var ps;
 var infowindow;
 
+const articleNo = 1;
+let polyline;
+const markerPins = ref([]);
+const locationData = ref([]);
+const props = defineProps({
+  markers: Object,
+  stopover: Object,
+  destination: Object,
+  flag: Number,
+});
+// const { markers, stopover, destination, flag } = defineProps({
+//   markers: Object,
+//   stopover: Object,
+//   destination: Object,
+//   flag: Number,
+// }); // 1. watch는 배열의 변화를 감지하지 못한다.
+// 2. 그래서 부모에서 object형으로 배열을 만든다.
+// 3. 부모가 객체의 배열을 넘기면, 자식이 객체를 받고, 그 객체를 열어볼 ref변수가 필요하다.
+// 4. 그래서 ref 변수에서 넘겨받은 부모의 객체의 배열을 열어본다.
+
+const marker = ref();
+const stop = ref();
+const dest = ref();
+
 onMounted(() => {
+  console.log("onma");
   if (window.kakao && window.kakao.maps) {
     initMap();
   } else {
@@ -34,80 +49,76 @@ onMounted(() => {
 
 const initMap = () => {
   const container = document.getElementById("map");
-
-  listDetail(
-    articleNo,
-    ({ data }) => {
-      console.log(data);
-      // console.log(data[0].category);
-      const options = {
-        center: new kakao.maps.LatLng(37.500613, 127.036431),
-        level: 5,
-      };
-      map = new kakao.maps.Map(container, options);
-      ps = new kakao.maps.services.Places();
-      infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
-
-      for (let i = 0; i < data.length; i++) {
-        const markerData = { ...data[i] };
-        locationData.value.push(markerData);
-
-        if (data[i].category === "시작지") {
-          console.log("시작지");
-          markers.value = { ...data[i] };
-        } else if (data[i].category === "경유지") {
-          console.log("경유지");
-          stopover.value.push({ ...data[i] });
-        } else if (data[i].category === "도착지") {
-          console.log("도착지");
-          destination.value = { ...data[i] };
-        }
-      }
-      console.log("markers = ", markers.value);
-      console.log("stopover = ", stopover.value);
-      console.log("destination = ", destination.value);
-      displayRoute();
-    },
-    (fail) => {
-      console.log(fail);
-    }
-  ); // article_no 가 1번일 때, 지도의 좌표 값 출력
-  // markers , stopover, destination 에 값
-
+  console.log("sdasdasdas", props.markers);
+  // console.log(data[0].category);
+  const options = {
+    center: new kakao.maps.LatLng(37.500613, 127.036431),
+    level: 5,
+  };
+  map = new kakao.maps.Map(container, options);
   ps = new kakao.maps.services.Places();
   infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
+
+  //     watchEffect(() => {
+  //       try {
+  //         console.log(markers.value);
+  //         // displayRoute();
+  //       } catch (error) {
+  //        console.error(error);
+  //       }
+  // });
+  // displayRoute();
+  // article_no 가 1번일 때, 지도의 좌표 값 출력
+  // markers , stopover, destination 에 값
   console.log("입력");
 };
 
 const displayRoute = () => {
+  // 기존의 마커들을 모두 지우기
+  markerPins.value.forEach((marker) => {
+    marker.setMap(null);
+  });
+  markerPins.value = []; // 마커 배열 비우기
+
   if (polyline) {
     polyline.setMap(null);
   }
 
   const linePath = [];
 
-  // console.log(markers.value);
+  console.log("props");
+  // console.log(props);
+  console.log(props.markers);
+  console.log(props.markers.arr.length);
+  // let a = props.markers.arr;
+  // console.log(a);
+  console.log(props.markers.arr[0]);
+  console.log(props.markers.arr[0].latitude);
+
   // 마커 표시
   const markerOptions = {
     map: map,
     position: new kakao.maps.LatLng(
-      markers.value.latitude,
-      markers.value.longitude
+      props.markers.arr[0].latitude,
+      props.markers.arr[0].longitude
     ),
   };
   const marker = new kakao.maps.Marker(markerOptions);
   markerPins.value.push(marker);
 
   linePath.push(
-    new kakao.maps.LatLng(markers.value.latitude, markers.value.longitude)
+    new kakao.maps.LatLng(
+      props.markers.arr[0].latitude,
+      props.markers.arr[0].longitude
+    )
   );
 
-  for (let i = 0; i < stopover.value.length; i++) {
+  for (let i = 0; i < props.stopover.arr.length; i++) {
     const stopoverOptions = {
       map: map,
       position: new kakao.maps.LatLng(
-        stopover.value[i].latitude,
-        stopover.value[i].longitude
+        props.stopover.arr[i].latitude,
+        props.stopover.arr[i].longitude
       ),
     };
     let stopoverMarker = new kakao.maps.Marker(stopoverOptions);
@@ -115,8 +126,8 @@ const displayRoute = () => {
 
     linePath.push(
       new kakao.maps.LatLng(
-        stopover.value[i].latitude,
-        stopover.value[i].longitude
+        props.stopover.arr[i].latitude,
+        props.stopover.arr[i].longitude
       )
     );
   }
@@ -124,8 +135,8 @@ const displayRoute = () => {
   const destinationOptions = {
     map: map,
     position: new kakao.maps.LatLng(
-      destination.value.latitude,
-      destination.value.longitude
+      props.destination.arr[0].latitude,
+      props.destination.arr[0].longitude
     ),
   };
   const destinationMarker = new kakao.maps.Marker(destinationOptions);
@@ -133,8 +144,8 @@ const displayRoute = () => {
 
   linePath.push(
     new kakao.maps.LatLng(
-      destination.value.latitude,
-      destination.value.longitude
+      props.destination.arr[0].latitude,
+      props.destination.arr[0].longitude
     )
   );
 
@@ -151,22 +162,48 @@ const displayRoute = () => {
   mapInit();
 };
 
-function mapInit() {
-  console.log(locationData.value[0].latitude);
-  console.log(locationData.value.length);
+const mapInit = () => {
+  // console.log(locationData);
+  // console.log(locationData.value[0].latitude);
+  // console.log(locationData.value.length);
   var bounds = new kakao.maps.LatLngBounds();
-  for (let i = 0; i < locationData.value.length; i++) {
+  let cnt =
+    props.markers.arr.length +
+    props.stopover.arr.length +
+    props.destination.arr.length;
+  console.log(props.markers.arr[0].latitude);
+  bounds.extend(
+    new kakao.maps.LatLng(
+      props.markers.arr[0].latitude,
+      props.markers.arr[0].longitude
+    )
+  );
+  for (let i = 0; i < props.stopover.arr.length; i++) {
     bounds.extend(
       new kakao.maps.LatLng(
-        locationData.value[i].latitude,
-        locationData.value[i].longitude
+        props.stopover.arr[i].latitude,
+        props.stopover.arr[i].longitude
       )
     );
   }
-
-  // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
+  bounds.extend(
+    new kakao.maps.LatLng(
+      props.destination.arr[0].latitude,
+      props.destination.arr[0].longitude
+    )
+  );
   map.setBounds(bounds);
-}
+};
+
+watch(props, (newv) => {
+  console.log("watch prop");
+  console.log(props.markers.arr);
+  // console.log(props.markers.arr[0].latitude);
+  if (props.markers.arr.length != 0) {
+    displayRoute();
+  }
+});
+
 // 키워드 검색 완료 시 호출되는 콜백함수 입니다
 function placesSearchCB(data, status, pagination) {
   if (status === kakao.maps.services.Status.OK) {
@@ -261,22 +298,9 @@ function displayMarker(place) {
 }
 </script>
 <template>
-  <div class="container">
-    <div class="container-fluid row">
-      <div id="map" class="col-8"></div>
-      <!-- <TravelList
-        :markers="markers"
-        :stopover="stopover"
-        :destination="destination"
-        class="col-4"
-        @send-list="listenList"
-        @remove-stopover="removeStopover"
-      /> -->
-      <!--자식에서 부모에게 send-list라는 이벤트를 발생했는데, 그걸 listen을 통해서 듣고 잇다가, 발생하면 이제 함수 처리한다.-->
-    </div>
-    <!-- <button id="determine" @click="requestSend">최종 결정</button> -->
-    <!-- 최종 결정을 눌렀을 때에, 현재의 시작지, 경유지, 도착지를 기준으로 post로 서버에 보내준다.-->
-  </div>
+  <!-- <div class="container-fluid row"> -->
+  <div id="map" class="col-8"></div>
+  <!-- </div> -->
 </template>
 <style scoped>
 .container {
