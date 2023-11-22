@@ -8,7 +8,7 @@ const articles = ref([]);
 const arr = ref(null);
 const allInforms = ref([]);
 const flag = ref(0);
-const imageUrl = ref([]);
+let imageUrl = ref([]);
 var markers = ref({
   arr: [],
 }); // 시작지
@@ -79,7 +79,7 @@ const handlePanelOpen = (openedPanelKey) => {
   //console.log("패널이 열릴 때 실행할 함수. Key:", openedPanelKey);
   //console.log("실행중");
   //collape 누르는 순간 정보 얻어와야된다.
-
+  imageUrl = ref([]);
   markers.value.arr = [];
   stopover.value.arr = [];
   destination.value.arr = [];
