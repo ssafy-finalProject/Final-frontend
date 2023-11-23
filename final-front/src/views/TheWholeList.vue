@@ -1,10 +1,15 @@
 <script setup>
 import { ref, watch, onMounted } from "vue";
-import { wholeArticle, getDetails, getCalendars, getArticle } from "@/api/board";
+import {
+  wholeArticle,
+  getDetails,
+  getCalendars,
+  getArticle,
+} from "@/api/board";
 import GetKakaoMap from "@/components/map/GetKakaoMap.vue";
 const { VITE_REST_API_URL } = import.meta.env;
 const word = ref("");
-const openedPanelKeys = ref([]);
+const openedPanelKey = ref(null);
 const articles = ref([]);
 const arr = ref(null);
 const allInforms = ref([]);
@@ -12,14 +17,13 @@ const flag = ref(0);
 let imageUrl = ref([]);
 var markers = ref({
   arr: [],
-}); // 시작지
+});
 var stopover = ref({
   arr: [],
-}); // 경유지
+});
 var destination = ref({
   arr: [],
-}); // 도착지
-
+});
 const boardArticle = ref({
   user_id: "",
   article_no: "",
@@ -29,64 +33,47 @@ const boardArticle = ref({
   hit: "",
   dtos: "",
 });
-//
+
 onMounted(() => {
-  // console.log("!!!markers.value.arr");
-  // console.log(markers.value.arr);
   getArticleList();
 });
 
-//검색어에 아무것도 없을때는 전체리스트를 띄우고
-//검색어에 뭔가있으면 해당 검색어를 detail의 placename으로 가지고 있는 board를 모두  띄운다.
-
 const getArticleList = () => {
-  // console.log(word.value);
   wholeArticle(
     word.value,
     ({ data }) => {
-      //console.log(data);
       articles.value = data.articles;
-      // console.log(articles.value);
     },
     (fail) => {
-      // console.log(fail);
+      console.log(fail);
     }
   );
 };
 
-//리스트를 가져왔으니, 해당 article no의 파일이 뭐가 있었는지 따로 구해야된다
+const handleCollapseChange = (key) => {
+  // 이전에 열려있던 패널의 정보를 가져오기
+  const currentPanelInfo = openedPanelKey.value
+    ? openedPanelKey.value[0]
+    : null;
 
-//또한 해당 articleno의 행선지가 무엇이 있었는지,
-// 그리고 그것의 경도 위도를 구해와야한다.
-const handleCollapseChange = (keys) => {
-  const newOpenedPanelKey = keys[0]; // 현재 클릭한 패널의 key
+  // 새로 열린 패널의 정보로 업데이트
+  openedPanelKey.value = [key];
 
-  if (newOpenedPanelKey) {
-    // 열린 패널이 있다면
-    //console.log("방금 클릭해서 열린 패널의 key:", newOpenedPanelKey);
-
-    // 기존에 열려있던 패널들의 key를 배열에서 제거
-    openedPanelKeys.value = openedPanelKeys.value.filter((key) => key !== newOpenedPanelKey);
-
-    // 방금 열린 패널의 key를 배열에 추가
-    openedPanelKeys.value.push(newOpenedPanelKey);
-
-    // 방금 열린 패널에 대한 처리 함수 실행
-    handlePanelOpen(newOpenedPanelKey);
+  // 이전에 열려있던 패널과 현재 열린 패널이 다르다면, 새로운 정보로 요청 보내기
+  if (currentPanelInfo !== key) {
+    handlePanelOpen();
   }
 };
 
-const handlePanelOpen = (openedPanelKey) => {
-  //console.log("패널이 열릴 때 실행할 함수. Key:", openedPanelKey);
-  //console.log("실행중");
-  //collape 누르는 순간 정보 얻어와야된다.
-  imageUrl = ref([]);
+const handlePanelOpen = () => {
+  imageUrl.value = [];
   markers.value.arr = [];
   stopover.value.arr = [];
   destination.value.arr = [];
   flag.value = Number(new Date().getMilliseconds());
+
   getCalendars(
-    openedPanelKey,
+    openedPanelKey.value,
     ({ data }) => {
       arr.value = data;
     },
@@ -94,49 +81,28 @@ const handlePanelOpen = (openedPanelKey) => {
       console.log(fail);
     }
   );
+
   getDetails(
-    openedPanelKey,
+    openedPanelKey.value,
     ({ data }) => {
-      // console.log(data);
       for (let i = 0; i < data.length; i++) {
         if (data[i].category === "시작지") {
-          // markers.value = { ...data[i] };
-          // console.log("!markers.value.arr");
-          // console.log(markers.value.arr);
-          // console.log(markers.value.arr.length);
-          // console.log("data[i]");
-          // console.log(data[i]);
           markers.value.arr.push(data[i]);
-          // console.log(markers.value.arr);
         } else if (data[i].category === "경유지") {
-          // stopover.value = { ...data[i] };
           stopover.value.arr.push(data[i]);
         } else if (data[i].category === "도착지") {
-          // destination.value = { ...data[i] };
           destination.value.arr.push(data[i]);
         }
       }
       flag.value = Number(new Date().getMilliseconds());
-
-      // console.log(markers.value.arr);
-      // console.log(stopover.value.arr);
-      // console.log(destination.value.arr);
-      // console.log(data);
-      // markers.value = data[0];
-      // console.log(markers.value);
-      // for (let i = 1; i < data.length - 1; i++) {
-      //   stopover.value.add(data[i]);
-      // }
-      // console.log(stopover.value);
-      // destination.value = data[data.length - 1];
-      // console.log(destination.value);
     },
     (fail) => {
-      // console.log(fail);
+      console.log(fail);
     }
   );
+
   getArticle(
-    openedPanelKey,
+    openedPanelKey.value,
     (success) => {
       boardArticle.value = success.data;
       if (boardArticle.value.dtos.length !== 0) {
@@ -149,7 +115,6 @@ const handlePanelOpen = (openedPanelKey) => {
               boardArticle.value.dtos[i].savedFileName
           );
         }
-        console.log("이미지" + imageUrl.value);
       }
     },
     (fail) => {
@@ -157,43 +122,45 @@ const handlePanelOpen = (openedPanelKey) => {
     }
   );
 };
-//
-
-// console.log("실행중");
-// //collape 누르는 순간 정보 얻어와야된다.
-// getDetails(
-//   key,
-//   ({ data }) => {
-//     console.log(data);
-//     //allInforms.value = data.articles;
-//     //console.log(articles.value);
-//   },
-//   (fail) => {
-//     console.log(fail);
-//   }
-// );
-
-//눌럿을때 펼쳐지는 이벤트
 </script>
 
 <template>
   <div class="container mt-5" style="display: flex">
-    <GetKakaoMap :markers="markers" :stopover="stopover" :destination="destination" :flag="flag"> </GetKakaoMap>
+    <GetKakaoMap
+      :markers="markers"
+      :stopover="stopover"
+      :destination="destination"
+      :flag="flag"
+    >
+    </GetKakaoMap>
     <div id="container">
       <div class="input-group input-group-sm">
-        <input type="text" class="form-control" v-model="word" placeholder="검색어..." />
-        <button class="btn btn-dark" type="button" @click="getArticleList">검색</button>
+        <input
+          type="text"
+          class="form-control"
+          v-model="word"
+          placeholder="검색어..."
+        />
+        <button class="btn btn-dark" type="button" @click="getArticleList">
+          검색
+        </button>
       </div>
       <div class="scroll-container" style="max-height: 650px; overflow-y: auto">
         <a-collapse class="mt-3" @change="handleCollapseChange">
-          <a-collapse-panel accordion v-for="article in articles" :key="article.article_no">
+          <a-collapse-panel
+            accordion
+            v-for="article in articles"
+            :key="article.article_no"
+          >
             <template #header>
               <div class="custom-header">
                 <div class="header-left">
                   <span>{{ article.subject }}</span>
                 </div>
                 <div class="header-right">
-                  <span class="additional-text">좋아요 수 : {{ article.hit }}</span>
+                  <span class="additional-text"
+                    >좋아요 수 : {{ article.hit }}</span
+                  >
                 </div>
               </div>
             </template>
@@ -205,7 +172,11 @@ const handlePanelOpen = (openedPanelKey) => {
                   >
                 </div>
 
-                <div v-for="(image, index) in imageUrl" :key="index" :class="{ active: index === 0 }">
+                <div
+                  v-for="(image, index) in imageUrl"
+                  :key="index"
+                  :class="{ active: index === 0 }"
+                >
                   <img :src="image" alt="main-img" />
                 </div>
                 <div class="feed_icon">
