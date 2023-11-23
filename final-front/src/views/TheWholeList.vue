@@ -1,6 +1,6 @@
 <script setup>
 import { ref, watch, onMounted } from "vue";
-import { wholeArticle, getDetails, getCalendars,getArticle } from "@/api/board";
+import { wholeArticle, getDetails, getCalendars, getArticle } from "@/api/board";
 import GetKakaoMap from "@/components/map/GetKakaoMap.vue";
 const word = ref("");
 const openedPanelKeys = ref([]);
@@ -134,19 +134,27 @@ const handlePanelOpen = (openedPanelKey) => {
       // console.log(fail);
     }
   );
-  getArticle(openedPanelKey,(success)=>{
-    boardArticle.value = success.data;
-    if (boardArticle.value.dtos.length !== 0) {
-      for(let i=0;i<boardArticle.value.dtos.length;i++){
-        imageUrl.value.push(`http://localhost:80/board/`+boardArticle.value.dtos[i].path+`/`+boardArticle.value.dtos[i].savedFileName);
-        
+  getArticle(
+    openedPanelKey,
+    (success) => {
+      boardArticle.value = success.data;
+      if (boardArticle.value.dtos.length !== 0) {
+        for (let i = 0; i < boardArticle.value.dtos.length; i++) {
+          imageUrl.value.push(
+            VITE_REST_API_URL +
+              `/board/` +
+              boardArticle.value.dtos[i].path +
+              `/` +
+              boardArticle.value.dtos[i].savedFileName
+          );
+        }
+        console.log("이미지" + imageUrl.value);
       }
-      console.log("이미지"+imageUrl.value);
+    },
+    (fail) => {
+      console.log(fail);
     }
-  },(fail)=>{
-    console.log(fail);
-  })
-
+  );
 };
 //
 
@@ -175,75 +183,76 @@ const handlePanelOpen = (openedPanelKey) => {
         <input type="text" class="form-control" v-model="word" placeholder="검색어..." />
         <button class="btn btn-dark" type="button" @click="getArticleList">검색</button>
       </div>
-<div class="scroll-container" style="max-height: 650px; overflow-y: auto;">
-      <a-collapse class="mt-3" @change="handleCollapseChange">
-        <a-collapse-panel accordion v-for="article in articles" :key="article.article_no">
-          <template #header>
-            <div class="custom-header">
-    <div class="header-left">
-      <span>{{ article.subject }}</span>
-    </div>
-    <div class="header-right">
-      <span class="additional-text">좋아요 수 : {{ article.hit }}</span>
-    </div>
-  </div>
-          </template>
-          <div class="main_feed">
-            <div class="feed_box">
-              <div class="feed_name">
-                <span class="feed_name_txt"
-                  ><h5>{{ article.subject }}</h5></span
-                >
-              </div>
-
-              <div v-for="(image, index) in imageUrl" :key="index" :class="{ active: index === 0 }">
-                <img :src="image" alt="main-img" />
-              </div>
-              <div class="feed_icon">
-                <div>
-                  <span class="material-icons-outlined"> ♥좋아요</span>
+      <div class="scroll-container" style="max-height: 650px; overflow-y: auto">
+        <a-collapse class="mt-3" @change="handleCollapseChange">
+          <a-collapse-panel accordion v-for="article in articles" :key="article.article_no">
+            <template #header>
+              <div class="custom-header">
+                <div class="header-left">
+                  <span>{{ article.subject }}</span>
+                </div>
+                <div class="header-right">
+                  <span class="additional-text">좋아요 수 : {{ article.hit }}</span>
                 </div>
               </div>
-              <div class="feed_like">
-                <p class="feed_txt"><b>좋아요 {{ article.hit }}개</b></p>
-              </div>
-              <div class="feed_content">
-                <p class="feed_txt">{{ article.content }}</p>
+            </template>
+            <div class="main_feed">
+              <div class="feed_box">
+                <div class="feed_name">
+                  <span class="feed_name_txt"
+                    ><h5>{{ article.subject }}</h5></span
+                  >
+                </div>
+
+                <div v-for="(image, index) in imageUrl" :key="index" :class="{ active: index === 0 }">
+                  <img :src="image" alt="main-img" />
+                </div>
+                <div class="feed_icon">
+                  <div>
+                    <span class="material-icons-outlined"> ♥좋아요</span>
+                  </div>
+                </div>
+                <div class="feed_like">
+                  <p class="feed_txt">
+                    <b>좋아요 {{ article.hit }}개</b>
+                  </p>
+                </div>
+                <div class="feed_content">
+                  <p class="feed_txt">{{ article.content }}</p>
+                </div>
               </div>
             </div>
-          </div>
-        </a-collapse-panel>
-      </a-collapse>
-    </div>
+          </a-collapse-panel>
+        </a-collapse>
+      </div>
     </div>
     <!--  -->
 
     <!--  -->
-    
   </div>
   <div class="margin-bottom">
-      <table>
-        <thead>
-          <tr>
-            <th>날짜</th>
-            <th>내용</th>
+    <table>
+      <thead>
+        <tr>
+          <th>날짜</th>
+          <th>내용</th>
+        </tr>
+      </thead>
+      <template v-if="arr && arr.length > 0">
+        <tbody>
+          <tr v-for="(item, index) in arr" :key="index">
+            <td>{{ item.year }}년 {{ item.month }}월 {{ item.day }}일</td>
+            <td>{{ item.memoContent }}</td>
           </tr>
-        </thead>
-        <template v-if="arr && arr.length > 0">
-          <tbody>
-            <tr v-for="(item, index) in arr" :key="index">
-              <td>{{ item.year }}년 {{ item.month }}월 {{ item.day }}일</td>
-              <td>{{ item.memoContent }}</td>
-            </tr>
-          </tbody>
-        </template>
-        <template v-else>
-          <tr>
-            <td colspan="2">데이터가 없습니다.</td>
-          </tr>
-        </template>
-      </table>
-    </div>
+        </tbody>
+      </template>
+      <template v-else>
+        <tr>
+          <td colspan="2">데이터가 없습니다.</td>
+        </tr>
+      </template>
+    </table>
+  </div>
 </template>
 
 <style scoped>
@@ -348,7 +357,7 @@ th {
   background-color: #f2f2f2;
 }
 
-img{
+img {
   width: 80%;
   height: 80%;
 }

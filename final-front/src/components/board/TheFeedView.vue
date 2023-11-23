@@ -4,6 +4,7 @@ import { RestAxios } from "@/util/http-commons";
 import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { getArticle } from "@/api/board";
+const { VITE_REST_API_URL } = import.meta.env;
 const boardArticle = ref({
   user_id: "",
   article_no: "",
@@ -31,9 +32,14 @@ onMounted(async () => {
       // console.log("이프이프");
       // console.log("패쓰:" + boardArticle.value.dtos[0].path);
       //사진받아오기
-      for(let i=0;i<boardArticle.value.dtos.length;i++){
-        imageUrl.value.push(`http://localhost:80/board/`+boardArticle.value.dtos[i].path+`/`+boardArticle.value.dtos[i].savedFileName);
-        
+      for (let i = 0; i < boardArticle.value.dtos.length; i++) {
+        imageUrl.value.push(
+          VITE_REST_API_URL +
+            `/board/` +
+            boardArticle.value.dtos[i].path +
+            `/` +
+            boardArticle.value.dtos[i].savedFileName
+        );
       }
       console.log(imageUrl.value);
     }
@@ -165,7 +171,7 @@ span {
   padding-right: 5px;
 }
 
-img{
+img {
   width: 80%;
   height: 80%;
 }

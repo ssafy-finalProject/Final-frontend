@@ -17,22 +17,15 @@ onMounted(() => {
           <img src="@/assets/img/main_logo.png" alt="" />
         </router-link>
       </a>
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#collapsibleNavbar"
-      >
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="collapsibleNavbar">
         <ul class="navbar-nav me-auto">
           <li class="nav-item"></li>
-          <li class="nav-item">
-          </li>
           <li class="nav-item"></li>
-          <li class="nav-item">
-          </li>
+          <li class="nav-item"></li>
+          <li class="nav-item"></li>
         </ul>
         <!-- <c:choose>
         <c:when test="${empty userInfo.userId }"> -->
@@ -53,12 +46,12 @@ onMounted(() => {
         <!-- <c:otherwise> -->
         <ul v-else class="navbar-nav">
           <li class="nav-item">
-            <a class="nav-link disabled"
-              >{{ piniaUser.userId }}님 반갑습니다.</a
-            >
+            <a class="nav-link disabled">{{ piniaUser.userId }}님 반갑습니다.</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#" @click="piniaLogout">로그아웃</a>
+            <router-link to="/" class="text-decoration-none">
+              <a class="nav-link" href="#" @click="piniaLogout">로그아웃</a>
+            </router-link>
           </li>
           <li class="nav-item">
             <router-link to="/mypage" class="text-decoration-none">

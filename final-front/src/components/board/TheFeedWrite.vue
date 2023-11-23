@@ -79,7 +79,7 @@ const onSubmit = () => {
       console.log(fail);
     }
   );
-  // router.push("myfeed");
+  router.push("myfeed");
 };
 
 const requestSend = () => {
@@ -423,14 +423,14 @@ const addFuc = () => {
   if (divNo1.value > 2) {
     divNo1.value = 2;
   }
-}
+};
 
 const minusFuc = () => {
   divNo1.value -= 1;
   if (divNo1.value < 0) {
     divNo1.value = 0;
   }
-}
+};
 </script>
 <template>
   <div>
@@ -438,101 +438,100 @@ const minusFuc = () => {
       <button @click="minusFuc" class="padding">이전</button>
       <button @click="addFuc" class="padding">다음</button>
     </div>
-   
+
     <div class="container" v-show="divNo1 == 0">
-    <div id="search">
-      <input v-model="searchKeyword" placeholder="장소를 검색하세요." />
-      <button @click="searchPlaces">검색</button>
-    </div>
-    <div class="container-fluid row"> 
-      <div id="map" class="col-8"></div>
-      <TravelList
-        :markers="markers"
-        :stopover="stopover"
-        :destination="destination"
-        class="col-4"
-        @send-list="listenList"
-        @remove-stopover="removeStopover" />
-      <!--자식에서 부모에게 send-list라는 이벤트를 발생했는데, 그걸 listen을 통해서 듣고 잇다가, 발생하면 이제 함수 처리한다.-->
-    </div>
-    <!-- <button id="determine" @click="requestSend">최종 결정</button> -->
-    <!-- 최종 결정을 눌렀을 때에, 현재의 시작지, 경유지, 도착지를 기준으로 post로 서버에 보내준다.-->
+      <div id="search">
+        <input v-model="searchKeyword" placeholder="장소를 검색하세요." />
+        <button @click="searchPlaces">검색</button>
+      </div>
+      <div class="container-fluid row">
+        <div id="map" class="col-8"></div>
+        <TravelList
+          :markers="markers"
+          :stopover="stopover"
+          :destination="destination"
+          class="col-4"
+          @send-list="listenList"
+          @remove-stopover="removeStopover" />
+        <!--자식에서 부모에게 send-list라는 이벤트를 발생했는데, 그걸 listen을 통해서 듣고 잇다가, 발생하면 이제 함수 처리한다.-->
+      </div>
+      <!-- <button id="determine" @click="requestSend">최종 결정</button> -->
+      <!-- 최종 결정을 눌렀을 때에, 현재의 시작지, 경유지, 도착지를 기준으로 post로 서버에 보내준다.-->
     </div>
     <div v-show="divNo1 == 1">
-    <div class="month-navigation">
-      <button @click="previousMonth">이전 달</button>
-      <h2>{{ currentMonthYear }}</h2>
-      <button @click="nextMonth">다음 달</button>
-    </div>
-
-    <table id="calendar">
-      <thead>
-        <tr>
-          <th>일</th>
-          <th>월</th>
-          <th>화</th>
-          <th>수</th>
-          <th>목</th>
-          <th>금</th>
-          <th>토</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(week, index) in calendar" :key="index">
-          <td
-            v-for="(day, dayIndex) in week"
-            :key="dayIndex"
-            :class="{ inactive: day.inactive }"
-            @click="handleDateClick(day.day)">
-            {{ day.day !== "" ? day.day : "" }}
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <div v-if="showModal">
-      <div class="modal-content">
-        <div>
-          <span class="close" @click="showModal = false">&times;</span>
-          <p>{{ realMonth }}월 {{ realDay }}일의 메모</p>
-        </div>
-        <textarea class="textarea" rows="4" v-model="memo"></textarea>
-        <button @click="closeAndSaveMemo">저장</button>
+      <div class="month-navigation">
+        <button @click="previousMonth">이전 달</button>
+        <h2>{{ currentMonthYear }}</h2>
+        <button @click="nextMonth">다음 달</button>
       </div>
-    </div>
+
+      <table id="calendar">
+        <thead>
+          <tr>
+            <th>일</th>
+            <th>월</th>
+            <th>화</th>
+            <th>수</th>
+            <th>목</th>
+            <th>금</th>
+            <th>토</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(week, index) in calendar" :key="index">
+            <td
+              v-for="(day, dayIndex) in week"
+              :key="dayIndex"
+              :class="{ inactive: day.inactive }"
+              @click="handleDateClick(day.day)">
+              {{ day.day !== "" ? day.day : "" }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div v-if="showModal">
+        <div class="modal-content">
+          <div>
+            <span class="close" @click="showModal = false">&times;</span>
+            <p>{{ realMonth }}월 {{ realDay }}일의 메모</p>
+          </div>
+          <textarea class="textarea" rows="4" v-model="memo"></textarea>
+          <button @click="closeAndSaveMemo">저장</button>
+        </div>
+      </div>
     </div>
     <div class="rightPage" v-show="divNo1 == 2">
-    <form class="upload-form" @submit.prevent="onSubmit">
-      <div class="upload-container">
-        <div class="form-group">
-          <span for="title">제목:</span>
-          <textarea id="title" name="title" required rows="1" v-model="feedArticle.subject"></textarea>
-        </div>
-        <h4>사진 업로드</h4>
-        <div class="form-group">
-          <div v-for="(url, index) in imageUrl" :key="index">
-            <img :src="url" alt="Preview" style="max-width: 50%; max-height: 150px" />
+      <form class="upload-form" @submit.prevent="onSubmit">
+        <div class="upload-container">
+          <div class="form-group">
+            <span for="title">제목:</span>
+            <textarea id="title" name="title" required rows="1" v-model="feedArticle.subject"></textarea>
           </div>
-          <label for="image">이미지 선택:</label>
-          <input
-            type="file"
-            id="image"
-            multiple="multiple"
-            name="image"
-            accept="image/*"
-            @change="handleFileChange"
-            required />
-        </div>
+          <h4>사진 업로드</h4>
+          <div class="form-group">
+            <div v-for="(url, index) in imageUrl" :key="index">
+              <img :src="url" alt="Preview" style="max-width: 50%; max-height: 150px" />
+            </div>
+            <label for="image">이미지 선택:</label>
+            <input
+              type="file"
+              id="image"
+              multiple="multiple"
+              name="image"
+              accept="image/*"
+              @change="handleFileChange"
+              required />
+          </div>
 
-        <div class="form-group">
-          <label for="contents">내용:</label>
-          <textarea id="contents" name="contents" rows="4" v-model="feedArticle.content" required></textarea>
+          <div class="form-group">
+            <label for="contents">내용:</label>
+            <textarea id="contents" name="contents" rows="4" v-model="feedArticle.content" required></textarea>
+          </div>
+          <button type="submit" id="upload">업로드</button>
         </div>
-        <button type="submit" id="upload">업로드</button>
-      </div>
-    </form>
+      </form>
     </div>
   </div>
-  
 </template>
 
 <style scoped>
@@ -610,7 +609,7 @@ button#upload {
 button {
   background-color: inherit;
   border-radius: 10px;
-  padding: 1px 8px
+  padding: 1px 8px;
 }
 
 .padding {
