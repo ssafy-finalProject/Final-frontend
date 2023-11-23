@@ -12,6 +12,7 @@ const searchKeyword = ref("");
 const markers = ref([]); // 시작지
 const stopover = ref([]); // 경유지
 const destination = ref([]); // 도착지
+const checkMemo = ref(0); // 메모 저장을 체크 하는 변수
 
 //메모를 한번에 담아서 보낼 변수
 const sendCalInform = ref([]);
@@ -125,9 +126,13 @@ const listenList = () => {
 
   linePath.push(new kakao.maps.LatLng(markers.value[0].y, markers.value[0].x));
   for (let i = 0; i < stopover.value.length; i++) {
-    linePath.push(new kakao.maps.LatLng(stopover.value[i].y, stopover.value[i].x));
+    linePath.push(
+      new kakao.maps.LatLng(stopover.value[i].y, stopover.value[i].x)
+    );
   }
-  linePath.push(new kakao.maps.LatLng(destination.value[0].y, destination.value[0].x));
+  linePath.push(
+    new kakao.maps.LatLng(destination.value[0].y, destination.value[0].x)
+  );
   console.log("좌표 값들: " + linePath);
   // 지도에 표시할 선을 생성합니다
   polyline = new kakao.maps.Polyline({
@@ -387,13 +392,23 @@ const closeAndSaveMemo = function () {
   console.log("지금 찾아야될 day : " + realDay.value);
   console.log("sendCal의 정보는 : " + JSON.stringify(sendCalInform.value));
   console.log("지금 년도는 :" + realYear.value);
-  let foundObject = sendCalInform.value.find((item) => item.day === realDay.value && item.month === realMonth.value);
+  let foundObject = sendCalInform.value.find(
+    (item) => item.day === realDay.value && item.month === realMonth.value
+  );
   //해당 id를 가진 객체가 존재한다면
   if (foundObject) {
-    console.log("찾은객체의 day : " + foundObject.day + "현재 날짜의 id" + realDay.value);
-    console.log("날짜 메모가 존재하는 녀석이였고 그녀석의 정보는 : " + JSON.stringify(foundObject));
+    console.log(
+      "찾은객체의 day : " + foundObject.day + "현재 날짜의 id" + realDay.value
+    );
+    console.log(
+      "날짜 메모가 존재하는 녀석이였고 그녀석의 정보는 : " +
+        JSON.stringify(foundObject)
+    );
     foundObject.memoContent = memo.value;
-    console.log("날짜 메모가 존재하는 녀석이였고 그녀석의 바뀐 정보는 : " + JSON.stringify(foundObject));
+    console.log(
+      "날짜 메모가 존재하는 녀석이였고 그녀석의 바뀐 정보는 : " +
+        JSON.stringify(foundObject)
+    );
   }
   //없으면 새로 넣어서 저장
   else {
@@ -403,7 +418,10 @@ const closeAndSaveMemo = function () {
       day: realDay.value,
       memoContent: memo.value,
     });
-    console.log("날짜 메모가 없는 녀석이여서 새로저장, 현재 sendcalInform은" + JSON.stringify(sendCalInform.value));
+    console.log(
+      "날짜 메모가 없는 녀석이여서 새로저장, 현재 sendcalInform은" +
+        JSON.stringify(sendCalInform.value)
+    );
   }
 
   console.log(`메모 추가: ${realDay.value} - ${memo.value}`);
@@ -431,7 +449,17 @@ const minusFuc = () => {
     divNo1.value = 0;
   }
 };
+
+const hasMemo = (day) => {
+  // Check if there is a memo for the selected day
+  return (
+    sendCalInform.value.find(
+      (item) => item.day === day && item.month === realMonth.value
+    ) !== undefined
+  );
+};
 </script>
+
 <template>
   <div>
     <div class="abs">
@@ -452,7 +480,8 @@ const minusFuc = () => {
           :destination="destination"
           class="col-4"
           @send-list="listenList"
-          @remove-stopover="removeStopover" />
+          @remove-stopover="removeStopover"
+        />
         <!--자식에서 부모에게 send-list라는 이벤트를 발생했는데, 그걸 listen을 통해서 듣고 잇다가, 발생하면 이제 함수 처리한다.-->
       </div>
       <!-- <button id="determine" @click="requestSend">최종 결정</button> -->
@@ -482,8 +511,9 @@ const minusFuc = () => {
             <td
               v-for="(day, dayIndex) in week"
               :key="dayIndex"
-              :class="{ inactive: day.inactive }"
-              @click="handleDateClick(day.day)">
+              :class="{ inactive: day.inactive, hasmemo: hasMemo(day.day) }"
+              @click="handleDateClick(day.day)"
+            >
               {{ day.day !== "" ? day.day : "" }}
             </td>
           </tr>
@@ -505,12 +535,22 @@ const minusFuc = () => {
         <div class="upload-container">
           <div class="form-group">
             <span for="title">제목:</span>
-            <textarea id="title" name="title" required rows="1" v-model="feedArticle.subject"></textarea>
+            <textarea
+              id="title"
+              name="title"
+              required
+              rows="1"
+              v-model="feedArticle.subject"
+            ></textarea>
           </div>
           <h4>사진 업로드</h4>
           <div class="form-group">
             <div v-for="(url, index) in imageUrl" :key="index">
-              <img :src="url" alt="Preview" style="max-width: 50%; max-height: 150px" />
+              <img
+                :src="url"
+                alt="Preview"
+                style="max-width: 50%; max-height: 150px"
+              />
             </div>
             <label for="image">이미지 선택:</label>
             <input
@@ -520,12 +560,19 @@ const minusFuc = () => {
               name="image"
               accept="image/*"
               @change="handleFileChange"
-              required />
+              required
+            />
           </div>
 
           <div class="form-group">
             <label for="contents">내용:</label>
-            <textarea id="contents" name="contents" rows="4" v-model="feedArticle.content" required></textarea>
+            <textarea
+              id="contents"
+              name="contents"
+              rows="4"
+              v-model="feedArticle.content"
+              required
+            ></textarea>
           </div>
           <button type="submit" id="upload">업로드</button>
         </div>
@@ -714,5 +761,8 @@ th {
   color: black;
   text-decoration: none;
   cursor: pointer;
+}
+#calendar .hasmemo {
+  background-color: #ffc107; /* You can use any background color you prefer */
 }
 </style>
