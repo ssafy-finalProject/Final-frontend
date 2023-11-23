@@ -2,6 +2,7 @@
 import { ref, watch, onMounted } from "vue";
 import { wholeArticle, getDetails, getCalendars, getArticle } from "@/api/board";
 import GetKakaoMap from "@/components/map/GetKakaoMap.vue";
+const { VITE_REST_API_URL } = import.meta.env;
 const word = ref("");
 const openedPanelKeys = ref([]);
 const articles = ref([]);
