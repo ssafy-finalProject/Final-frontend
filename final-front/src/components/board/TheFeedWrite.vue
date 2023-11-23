@@ -74,12 +74,12 @@ const onSubmit = () => {
     data,
     (success) => {
       console.log(success);
+      router.push("myfeed");
     },
     (fail) => {
       console.log(fail);
     }
   );
-  router.push("myfeed");
 };
 
 const requestSend = () => {
